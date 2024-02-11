@@ -1,12 +1,19 @@
 'use client';
 
-import { Button, Input, Card, Affix } from 'antd';
-import { Footer } from 'antd/es/layout/layout';
+import { Button, Input } from 'antd';
 import { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
+import { headers } from 'next/headers';
 
 type ChatCardType = {
   title: string;
   content: string;
+}
+
+type MessageType = {
+  language: string;
+  content: string;
+  source: 'client' | 'server';
 }
 
 const ChatMessage = ({ title, content }: ChatCardType) => (
@@ -25,13 +32,30 @@ export default function App() {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }
 
-  const onClick = () => {
-    setMessages([...messages, { title: 'You', content: input }]);
+  const postMessage = async (messages: ChatCardType[]) => {
+    try {
+      const response = await axios.post('http://localhost:8000/chats/', {
+        language: 'en',
+        content: input,
+        source: 'client'
+      }, {
+        headers: { 'Content-Type': 'application/json' },
+        auth: { username: 'dan', password: '1234' }});
+      setMessages([...messages, { title: 'ChatGPT', content: response.data.content }])
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const onClick = async () => {
+    const latestMessages = [...messages, { title: 'You', content: input }];
+    setMessages(latestMessages);
+    await postMessage(latestMessages);
   }
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages])
+  }, [messages]);
 
   return (
     <main className="flex flex-col min-h-screen">
@@ -43,7 +67,7 @@ export default function App() {
         }
         <div ref={messageEndRef} />
       </div>
-      <div className='fixed bottom-0 flex flex-col w-1/2 self-center'>
+      <div className='flex flex-col w-1/2 self-center'>
         <Input
           size='large'
           placeholder='How can I help?'
