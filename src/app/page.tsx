@@ -3,17 +3,11 @@
 import { Button, Input } from 'antd';
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { headers } from 'next/headers';
+import APIService from './service/api';
 
 type ChatCardType = {
   title: string;
   content: string;
-}
-
-type MessageType = {
-  language: string;
-  content: string;
-  source: 'client' | 'server';
 }
 
 const ChatMessage = ({ title, content }: ChatCardType) => (
@@ -34,13 +28,8 @@ export default function App() {
 
   const postMessage = async (messages: ChatCardType[]) => {
     try {
-      const response = await axios.post('http://localhost:8000/chats/', {
-        language: 'en',
-        content: input,
-        source: 'client'
-      }, {
-        headers: { 'Content-Type': 'application/json' },
-        auth: { username: 'dan', password: '1234' }});
+      const api = new APIService({ username: 'dan', password: '1234' });
+      const response = await api.postChat({ language: 'en', content: input, source: 'client'});
       setMessages([...messages, { title: 'ChatGPT', content: response.data.content }])
     } catch (error) {
       console.log(error);
