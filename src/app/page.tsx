@@ -85,7 +85,7 @@ export default function App() {
 
   return (
     <main className="flex flex-col min-h-screen">
-      <div className='h-24 self-center m-5'>
+      <div className='h-24 self-center'>
         <p>Microphone: {listening ? 'on' : 'off'}</p>
         <Button onClick={onStartListening}>Start</Button>
         <Button onClick={onStopListening}>Stop</Button>
@@ -97,7 +97,11 @@ export default function App() {
             <ChatMessage key={index} title={title} content={content} />
           )
         }
-        <div ref={messageEndRef} />
+        <div ref={messageEndRef} className='self-center'> 
+          <audio id='ai-voice' autoPlay muted={false} preload='auto' >
+            <source src='http://localhost:8000/chats/943/audio/' />
+            </audio>
+          </div>
       </div>
       <div className='flex flex-col w-1/2 self-center h-[100px]'>
         <Input
