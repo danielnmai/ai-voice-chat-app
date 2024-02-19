@@ -63,7 +63,7 @@ export default function App() {
   const onVoiceInput = async (message: string) => {
     const latestMessages = [...messages, { title: 'You', content: message }];
     setMessages(latestMessages);
-    await postMessage(input, latestMessages);
+    await postMessage(message, latestMessages);
   };
 
   const onStartListening = () => {
