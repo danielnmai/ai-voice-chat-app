@@ -108,7 +108,7 @@ export default function App() {
 
     const latestMessages = output ? messagesWithOutput : messagesWithoutOutput;
     setMessages(latestMessages);
-    await postMessage(message);
+    await postMessage(message, latestMessages);
   };
 
   const onStartListening = () => {
