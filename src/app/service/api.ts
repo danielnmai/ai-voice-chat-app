@@ -18,35 +18,18 @@ type PostChatResult = {
 };
 
 class APIService {
-  url = 'http://localhost:8000/chats/';
+  BASE_URL = 'https://70i26raxn9.execute-api.us-west-1.amazonaws.com/dev/chats/';
+
+  // BASE_URL = 'http://localhost:8000/chats/';
 
   axiosInstance: AxiosInstance;
 
-  username: string;
-
-  password: string;
-
   constructor(auth: AuthType) {
     this.axiosInstance = axios.create({
-      baseURL: this.url,
+      baseURL: this.BASE_URL,
       timeout: 30000,
       headers: { 'Content-Type': 'application/json' },
       auth,
-    });
-
-    this.username = auth.username;
-    this.password = auth.password;
-  }
-
-  streamResponse(payload: PostChatType) {
-    return fetch(`${this.url}stream/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Basic ${btoa(`${this.username}:${this.password}`)}`,
-      },
-      body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(100000),
     });
   }
 
@@ -55,7 +38,7 @@ class APIService {
   }
 
   getChatAudioURL(chatId: number) {
-    return `${this.url}${chatId}/audio/`;
+    return `${this.BASE_URL}${chatId}/audio/`;
   }
 }
 

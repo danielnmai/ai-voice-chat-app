@@ -22,7 +22,6 @@ function ChatMessage({ title, content }: ChatCardType) {
 
 export default function App() {
   const [input, setInput] = useState('');
-  const [output, setOutput] = useState('');
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [voiceChatId, setVoiceChatId] = useState<number>();
   const [messages, setMessages] = useState<ChatCardType[]>([]);
@@ -30,83 +29,40 @@ export default function App() {
     listening,
     finalTranscript,
     resetTranscript,
-    // browserSupportsSpeechRecognition,
+    browserSupportsSpeechRecognition,
   } = useSpeechRecognition();
   const messageEndRef = useRef<HTMLDivElement>(null);
-  const api = new APIService({ username: 'dan', password: '1234' });
-
-  // setVoiceEnabled(true); // auto enable it for now
 
   const scrollToBottom = () => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const postMessage = async (message: string) => {
+  const api = new APIService({ username: 'dan', password: '1234' });
+
+  const postMessage = async (message: string, latestMessages: ChatCardType[]) => {
     try {
-      const streamResponse = await api.streamResponse({ language: 'en', content: message, source: 'client' });
-
-      const reader = streamResponse.body?.getReader();
-      let text = '';
-      const decoder = new TextDecoder();
-
-      // eslint-disable-next-line no-constant-condition
-      // read streams of text and save to output
-      while (true) {
-        if (!reader) break;
-
-        // eslint-disable-next-line no-await-in-loop
-        const { done, value } = await reader!.read();
-        const partialText = decoder.decode(value);
-
-        if (done) {
-          // remove the last 'None' keyword, which indicates the end of generated text
-          text = text.substring(0, text.lastIndexOf('None'));
-          setOutput(text);
-          break;
-        }
-
-        text += partialText;
-        setOutput(text);
-      }
-
-      // save the generated text response
-      const response = await api.postChat({
-        language: 'en',
-        source: 'server',
-        content: text,
-      });
-
-      // get the chat id and play audio if voice chat is enabled
-      const { id } = response.data;
+      const response = await api.postChat({ language: 'en', content: message, source: 'client' });
+      const { content, id } = response.data;
 
       if (voiceEnabled) {
         setVoiceChatId(id);
       }
 
-      // Reset the transcript for next convo
+      setMessages([...latestMessages, { title: 'ChatGPT', content }]);
       resetTranscript();
     } catch (error) {
       console.log(error);
     }
   };
 
-  // Handles text input from user
   const onClick = async () => {
-    const messagesWithoutOutput = [...messages, { title: 'You', content: input }];
-    const messagesWithOutput = [...messages, { title: 'ChatGPT', content: output }, { title: 'You', content: input }];
-
-    const latestMessages = output ? messagesWithOutput : messagesWithoutOutput;
+    const latestMessages = [...messages, { title: 'You', content: input }];
     setMessages(latestMessages);
-    await postMessage(input);
-    setInput('');
+    await postMessage(input, latestMessages);
   };
 
-  // Handles voice input from user
   const onVoiceInput = async (message: string) => {
-    const messagesWithoutOutput = [...messages, { title: 'You', content: message }];
-    const messagesWithOutput = [...messages, { title: 'ChatGPT', content: output }, { title: 'You', content: message }];
-
-    const latestMessages = output ? messagesWithOutput : messagesWithoutOutput;
+    const latestMessages = [...messages, { title: 'You', content: message }];
     setMessages(latestMessages);
     await postMessage(message, latestMessages);
   };
@@ -119,16 +75,12 @@ export default function App() {
     SpeechRecognition.stopListening();
   };
 
-  // scroll to the latest message
   useEffect(() => {
     scrollToBottom();
-  }, [output]);
+  }, [messages]);
 
-  // get the audio transcript
   useEffect(() => {
     if (finalTranscript) {
-      setMessages([...messages, { title: 'ChatGPT', content: output }]);
-      setOutput('');
       onVoiceInput(finalTranscript);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -145,36 +97,34 @@ export default function App() {
         <Button onClick={onStopListening}>Stop</Button>
         <Button onClick={resetTranscript}>Reset</Button>
       </div>
-      <div className="flex flex-col overflow-y-auto h-[calc(100vh-100px)] m-2 w-full">
+      <div className="flex flex-col overflow-y-auto h-[calc(100vh-100px)] p-5 w-full">
         {
-            messages.map(({ title, content }, index) => (
-              <ChatMessage
-                key={index}
-                title={title}
-                content={content}
-              />
-            ))
-          }
-        {output && <ChatMessage title="ChatGPT" content={output} />}
-        {
+          messages.map(({ title, content }, index) => (
+            <ChatMessage
+              key={index}
+              title={title}
+              content={content}
+            />
+          ))
+        }
+        <div ref={messageEndRef} className="self-center">
+          {
             voiceEnabled && voiceChatId
             && (
-              <div>
-                <audio id="ai-voice" src={api.getChatAudioURL(voiceChatId)} autoPlay>
-                  <track kind="captions" content={messages[messages.length - 1].content} />
-                </audio>
-              </div>
+              <audio id="ai-voice" src={api.getChatAudioURL(voiceChatId)} autoPlay>
+                <track kind="captions" content={messages[messages.length - 1].content} />
+              </audio>
             )
           }
-        <div ref={messageEndRef} />
+        </div>
       </div>
       <div className="flex flex-col w-1/2 self-center h-[100px]">
         <Input
           size="large"
           placeholder="How can I help?"
           onChange={(event) => setInput(event.target.value)}
-          value={input}
         />
+
         <Button onClick={onClick} className="self-end my-2">Send</Button>
       </div>
     </main>
