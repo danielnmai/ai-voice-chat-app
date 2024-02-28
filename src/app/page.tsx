@@ -22,7 +22,7 @@ function ChatMessage({ title, content }: ChatCardType) {
 
 export default function App() {
   const [input, setInput] = useState('');
-  const [voiceEnabled, setVoiceEnabled] = useState(true);
+  const [voiceEnabled, setVoiceEnabled] = useState(false);
   const [voiceChatId, setVoiceChatId] = useState<number>();
   const [messages, setMessages] = useState<ChatCardType[]>([]);
   const {
@@ -101,6 +101,7 @@ export default function App() {
         {
           messages.map(({ title, content }, index) => (
             <ChatMessage
+            // eslint-disable-next-line
               key={index}
               title={title}
               content={content}
