@@ -27,11 +27,11 @@ export default function App() {
   const [voiceChatId, setVoiceChatId] = useState<number>();
   const [messages, setMessages] = useState<ChatCardType[]>([]);
   const {
-    listening,
+    // listening,
+    // isMicrophoneAvailable,
     finalTranscript,
     resetTranscript,
-    // eslint-disable-next-line
-    browserSupportsSpeechRecognition,
+    // browserSupportsSpeechRecognition,
   } = useSpeechRecognition();
   const messageEndRef = useRef<HTMLDivElement>(null);
 

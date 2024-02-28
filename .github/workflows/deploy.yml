@@ -1,0 +1,30 @@
+name: Build, push to S3 and invalidate Cloudfront
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Build
+        run: yarn build
+
+      - name: Deploy
+        uses: reggionick/s3-deploy@v4
+        with:
+          folder: out
+          bucket: ${{ vars.S3_BUCKET }}
+          bucket-region: ${{ vars.S3_BUCKET_REGION }}
+          dist-id: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
+          invalidation: /
+          delete-removed: true
