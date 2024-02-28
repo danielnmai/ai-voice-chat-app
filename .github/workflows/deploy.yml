@@ -28,3 +28,4 @@ jobs:
           dist-id: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
           invalidation: /
           delete-removed: true
+          private: true
