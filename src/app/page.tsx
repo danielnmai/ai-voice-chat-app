@@ -22,6 +22,7 @@ function ChatMessage({ title, content }: ChatCardType) {
 
 export default function App() {
   const [input, setInput] = useState('');
+  // eslint-disable-next-line
   const [voiceEnabled, setVoiceEnabled] = useState(false);
   const [voiceChatId, setVoiceChatId] = useState<number>();
   const [messages, setMessages] = useState<ChatCardType[]>([]);
@@ -29,6 +30,7 @@ export default function App() {
     listening,
     finalTranscript,
     resetTranscript,
+    // eslint-disable-next-line
     browserSupportsSpeechRecognition,
   } = useSpeechRecognition();
   const messageEndRef = useRef<HTMLDivElement>(null);
@@ -51,6 +53,7 @@ export default function App() {
       setMessages([...latestMessages, { title: 'ChatGPT', content }]);
       resetTranscript();
     } catch (error) {
+      resetTranscript();
       console.log(error);
     }
   };
@@ -88,16 +91,7 @@ export default function App() {
 
   return (
     <main className="flex flex-col min-h-screen">
-      <div className="h-24 self-center">
-        <p>
-          Microphone:
-          {listening ? 'on' : 'off'}
-        </p>
-        <Button onClick={onStartListening}>Start</Button>
-        <Button onClick={onStopListening}>Stop</Button>
-        <Button onClick={resetTranscript}>Reset</Button>
-      </div>
-      <div className="flex flex-col overflow-y-auto h-[calc(100vh-100px)] p-5 w-full">
+      <div className="flex flex-col overflow-y-auto h-[calc(100vh-200px)] p-5 w-full">
         {
           messages.map(({ title, content }, index) => (
             <ChatMessage
@@ -119,7 +113,26 @@ export default function App() {
           }
         </div>
       </div>
-      <div className="flex flex-col w-1/2 self-center h-[100px]">
+      <div className="flex flex-col w-1/2 self-center h-[200px]">
+        <div className="mb-2 mb-2 self-center">
+          <div className="flex">
+            <p className="mr-2">
+              Microphone:
+              {listening ? ' on' : ' off'}
+            </p>
+            <p>
+              Voice response:
+              {voiceEnabled ? ' on' : ' off'}
+            </p>
+          </div>
+          <div className="flex">
+            <Button className="mr-2" onClick={onStartListening}>Start</Button>
+            <Button className="mr-2" onClick={onStopListening}>Stop</Button>
+            <Button className="mr-2" onClick={resetTranscript}>Reset</Button>
+            <Button className="mr-2" onClick={() => setVoiceEnabled(true)}>Enable voice</Button>
+            <Button onClick={() => setVoiceEnabled(false)}>Disable voice</Button>
+          </div>
+        </div>
         <Input
           size="large"
           placeholder="How can I help?"
