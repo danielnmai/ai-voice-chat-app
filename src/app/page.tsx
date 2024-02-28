@@ -22,8 +22,8 @@ function ChatMessage({ title, content }: ChatCardType) {
 
 export default function App() {
   const [input, setInput] = useState('');
-  // eslint-disable-next-line
   const [voiceEnabled, setVoiceEnabled] = useState(false);
+  const [isListening, setIsListening] = useState(false);
   const [voiceChatId, setVoiceChatId] = useState<number>();
   const [messages, setMessages] = useState<ChatCardType[]>([]);
   const {
@@ -39,6 +39,11 @@ export default function App() {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const resetInput = () => {
+    resetTranscript();
+    setInput('');
+  };
+
   const api = new APIService({ username: 'dan', password: '1234' });
 
   const postMessage = async (message: string, latestMessages: ChatCardType[]) => {
@@ -50,10 +55,10 @@ export default function App() {
         setVoiceChatId(id);
       }
 
-      setMessages([...latestMessages, { title: 'ChatGPT', content }]);
-      resetTranscript();
+      setMessages([...latestMessages, { title: 'AI', content }]);
+      resetInput();
     } catch (error) {
-      resetTranscript();
+      resetInput();
       console.log(error);
     }
   };
@@ -70,18 +75,29 @@ export default function App() {
     await postMessage(message, latestMessages);
   };
 
-  const onStartListening = () => {
-    SpeechRecognition.startListening({ continuous: true });
+  const toggleVoiceResponse = () => {
+    setVoiceEnabled(!voiceEnabled);
   };
 
-  const onStopListening = () => {
-    SpeechRecognition.stopListening();
+  const toggleVoiceInput = () => {
+    setIsListening(!isListening);
   };
 
+  // scroll to the latest message
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
+  // trigger microphone input
+  useEffect(() => {
+    if (isListening) {
+      SpeechRecognition.startListening({ continuous: true });
+    } else {
+      SpeechRecognition.stopListening();
+    }
+  }, [isListening]);
+
+  // obtain transcript from voice input
   useEffect(() => {
     if (finalTranscript) {
       onVoiceInput(finalTranscript);
@@ -113,30 +129,27 @@ export default function App() {
           }
         </div>
       </div>
-      <div className="flex flex-col w-1/2 self-center h-[200px]">
-        <div className="mb-2 mb-2 self-center">
+      <div className="flex flex-col self-center h-[200px] px-4 w-full md:w-1/2">
+        <div className="mb-2 self-center">
           <div className="flex">
-            <p className="mr-2">
-              Microphone:
-              {listening ? ' on' : ' off'}
-            </p>
-            <p>
-              Voice response:
-              {voiceEnabled ? ' on' : ' off'}
-            </p>
-          </div>
-          <div className="flex">
-            <Button className="mr-2" onClick={onStartListening}>Start</Button>
-            <Button className="mr-2" onClick={onStopListening}>Stop</Button>
-            <Button className="mr-2" onClick={resetTranscript}>Reset</Button>
-            <Button className="mr-2" onClick={() => setVoiceEnabled(true)}>Enable voice</Button>
-            <Button onClick={() => setVoiceEnabled(false)}>Disable voice</Button>
+            <Button className="mr-2" onClick={toggleVoiceInput}>
+              {isListening ? 'Stop' : 'Start' }
+              {' '}
+              Talking
+            </Button>
+            <Button className="mr-2" onClick={toggleVoiceResponse}>
+              {voiceEnabled ? 'Disable' : 'Enable'}
+              {' '}
+              Voice Response
+            </Button>
           </div>
         </div>
         <Input
+          className="h-12"
           size="large"
           placeholder="How can I help?"
           onChange={(event) => setInput(event.target.value)}
+          value={input}
         />
 
         <Button onClick={onClick} className="self-end my-2">Send</Button>

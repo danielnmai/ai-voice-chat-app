@@ -6,5 +6,7 @@
   ],
   "parserOptions": {
     "project": "./tsconfig.json"
-  }
+  },
+  "ignorePatterns": ["*.mjs"]
+
 }

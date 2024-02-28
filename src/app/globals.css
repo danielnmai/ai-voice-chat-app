@@ -24,3 +24,21 @@ body {
     text-wrap: balance;
   }
 }
+
+ /* mobile phone */
+ #app {
+  width: 100%;
+}
+
+/* tablet screen */
+@media (min-width: 768px) {
+  #app {
+    width: 100%;
+  }
+}
+/* large screen */
+@media (min-width: 1024px) {
+  #app {
+    width: 100%;
+  }
+}
