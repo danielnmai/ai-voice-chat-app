@@ -18,9 +18,7 @@ type PostChatResult = {
 };
 
 class APIService {
-  BASE_URL = 'https://70i26raxn9.execute-api.us-west-1.amazonaws.com/dev/chats/';
-
-  // BASE_URL = 'http://localhost:8000/chats/';
+  BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   axiosInstance: AxiosInstance;
 
