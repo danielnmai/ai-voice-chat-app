@@ -1,7 +1,7 @@
 'use client'
 
 import 'regenerator-runtime/runtime'
-import { Button, Input } from 'antd'
+import { Button, TextInput } from '@mantine/core'
 import React, { useState, useEffect, useRef } from 'react'
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
 import APIService from './service/api'
@@ -102,7 +102,6 @@ export default function App() {
     if (finalTranscript) {
       onVoiceInput(finalTranscript)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [finalTranscript])
 
   return (
@@ -127,23 +126,17 @@ export default function App() {
       <div className="flex flex-col self-center h-[200px] px-4 w-full md:w-1/2">
         <div className="mb-2 self-center">
           <div className="flex">
-            <Button className="mr-2" onClick={toggleVoiceInput}>
+            <Button variant="outline" className="mr-2" onClick={toggleVoiceInput}>
               {isListening ? 'Stop' : 'Start'} Talking
             </Button>
-            <Button className="mr-2" onClick={toggleVoiceResponse}>
+            <Button variant="outline" className="mr-2" onClick={toggleVoiceResponse}>
               {voiceEnabled ? 'Disable' : 'Enable'} Voice Response
             </Button>
           </div>
         </div>
-        <Input
-          className="h-12"
-          size="large"
-          placeholder="How can I help?"
-          onChange={(event) => setInput(event.target.value)}
-          value={input}
-        />
+        <TextInput placeholder="How can I help?" onChange={(event) => setInput(event.target.value)} value={input} />
 
-        <Button onClick={onClick} className="self-end my-2">
+        <Button variant="outline" onClick={onClick} className="self-end my-2">
           Send
         </Button>
       </div>
