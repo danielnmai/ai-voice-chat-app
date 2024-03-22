@@ -1,12 +1,8 @@
 {
-  "extends": [
-    "airbnb",
-    "airbnb/hooks",
-    "airbnb-typescript"
-  ],
+  "extends": ["plugin:@typescript-eslint/recommended"],
   "parserOptions": {
     "project": "./tsconfig.json"
   },
-  "ignorePatterns": ["*.mjs"]
-
+  "ignorePatterns": ["*.mjs", "*.cjs"],
+  "rules": {}
 }
