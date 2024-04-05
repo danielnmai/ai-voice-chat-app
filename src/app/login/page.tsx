@@ -84,7 +84,7 @@ const Login = (props: PaperProps) => {
             )}
           </Stack>
 
-          <Group justify="space-between" mt="xl">
+          <Group mt="xl">
             <Anchor component="button" type="button" c="dimmed" onClick={() => toggle()} size="xs">
               {type === 'register' ? 'Already have an account? Login' : "Don't have an account? Register"}
             </Anchor>
