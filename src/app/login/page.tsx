@@ -8,7 +8,7 @@ import {
   Text,
   Paper,
   Group,
-  PaperProps,
+  // PaperProps,
   Button,
   Checkbox,
   Anchor,
@@ -16,7 +16,7 @@ import {
   Center
 } from '@mantine/core'
 
-const Login = (props: PaperProps) => {
+const Login = () => {
   const [type, toggle] = useToggle(['login', 'register'])
   const form = useForm({
     initialValues: {
