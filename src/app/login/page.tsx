@@ -2,19 +2,7 @@
 
 import { useToggle, upperFirst } from '@mantine/hooks'
 import { useForm } from '@mantine/form'
-import {
-  TextInput,
-  PasswordInput,
-  Text,
-  Paper,
-  Group,
-  // PaperProps,
-  Button,
-  Checkbox,
-  Anchor,
-  Stack,
-  Center
-} from '@mantine/core'
+import { TextInput, PasswordInput, Text, Paper, Group, Button, Anchor, Stack, Center } from '@mantine/core'
 
 const Login = () => {
   const [type, toggle] = useToggle(['login', 'register'])
@@ -22,8 +10,7 @@ const Login = () => {
     initialValues: {
       email: '',
       name: '',
-      password: '',
-      terms: false
+      password: ''
     },
 
     validate: {
@@ -57,7 +44,7 @@ const Login = () => {
             <TextInput
               required
               label="Email"
-              placeholder="hello@mantine.dev"
+              placeholder="you@email.com"
               value={form.values.email}
               onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
               error={form.errors.email && 'Invalid email'}
@@ -67,30 +54,19 @@ const Login = () => {
             <PasswordInput
               required
               label="Password"
-              placeholder="Your password"
+              placeholder="password"
               value={form.values.password}
               onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
               error={form.errors.password && 'Password should include at least 6 characters'}
               radius="md"
             />
-
-            {type === 'register' && (
-              <Checkbox
-                required
-                label="I accept terms and conditions"
-                checked={form.values.terms}
-                onChange={(event) => form.setFieldValue('terms', event.currentTarget.checked)}
-              />
-            )}
           </Stack>
 
           <Group mt="xl">
-            <Anchor component="button" type="button" c="dimmed" onClick={() => toggle()} size="xs">
+            <Anchor component="button" type="button" onClick={() => toggle()} size="xs">
               {type === 'register' ? 'Already have an account? Login' : "Don't have an account? Register"}
             </Anchor>
-            <Button type="submit" radius="xl">
-              {upperFirst(type)}
-            </Button>
+            <Button type="submit">{upperFirst(type)}</Button>
           </Group>
         </form>
       </Paper>
