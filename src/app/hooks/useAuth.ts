@@ -1,6 +1,6 @@
-import { useContext, useEffect } from 'react'
+import { useContext } from 'react'
 import { AuthContext } from '../context/auth'
-import { useLocalStorage, readLocalStorageValue } from '@mantine/hooks'
+import { useLocalStorage } from '@mantine/hooks'
 
 export interface User {
   id: string
