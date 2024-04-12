@@ -25,7 +25,7 @@ const App = () => {
         <div>Logo</div>
       </AppShell.Header>
 
-      <AppShell.Navbar>Bleh</AppShell.Navbar>
+      <AppShell.Navbar></AppShell.Navbar>
 
       <AppShell.Main>
         <Chat />

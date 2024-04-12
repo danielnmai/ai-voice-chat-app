@@ -1,11 +1,23 @@
 'use client'
 
 import { useToggle, upperFirst } from '@mantine/hooks'
-import { useForm } from '@mantine/form'
+import { useForm, isEmail } from '@mantine/form'
 import { TextInput, PasswordInput, Text, Paper, Group, Button, Anchor, Stack, Center } from '@mantine/core'
+import APIService from '../service/api'
+import { useRouter } from 'next/navigation'
+import useAuth from '../hooks/useAuth'
+
+type FormType = {
+  email: string
+  password: string
+  name?: string
+}
 
 const Login = () => {
   const [type, toggle] = useToggle(['login', 'register'])
+  const router = useRouter()
+  const { loginUser, loggedInUser } = useAuth()
+  // const { loggedInUser } = useContext(AuthContext)
   const form = useForm({
     initialValues: {
       email: '',
@@ -14,10 +26,26 @@ const Login = () => {
     },
 
     validate: {
-      email: (val: string) => (/^\S+@\S+$/.test(val) ? null : 'Invalid email'),
-      password: (val: string) => (val.length <= 6 ? 'Password should include at least 6 characters' : null)
+      email: isEmail('Email is required'),
+      password: (val: string) => val.length < 4 && 'Password should include at least 4 characters'
     }
   })
+
+  const handleSubmit = async (values: FormType) => {
+    try {
+      if (type == 'login') {
+        const api = new APIService()
+        const { email, password } = values
+        const { data } = await api.login({ email, password })
+
+        loginUser(data)
+        form.reset()
+        router.push('/')
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   return (
     <Center className="h-screen">
@@ -25,11 +53,7 @@ const Login = () => {
         <Text size="lg" fw={500} pb={5}>
           {upperFirst(type)}
         </Text>
-        <form
-          onSubmit={form.onSubmit((values) => {
-            console.log('subbmited ', values)
-          })}
-        >
+        <form onSubmit={form.onSubmit(handleSubmit)}>
           <Stack>
             {type === 'register' && (
               <TextInput
@@ -47,7 +71,7 @@ const Login = () => {
               placeholder="you@email.com"
               value={form.values.email}
               onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
-              error={form.errors.email && 'Invalid email'}
+              error={form.errors.email}
               radius="md"
             />
 
@@ -57,7 +81,7 @@ const Login = () => {
               placeholder="password"
               value={form.values.password}
               onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
-              error={form.errors.password && 'Password should include at least 6 characters'}
+              error={form.errors.password}
               radius="md"
             />
           </Stack>

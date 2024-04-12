@@ -44,7 +44,7 @@ const Chat = () => {
     setInput('')
   }
 
-  const api = new APIService({ username: 'dan', password: '1234' })
+  const api = new APIService()
 
   const postMessage = async (message: string, latestMessages: ChatCardType[]) => {
     try {

@@ -6,6 +6,7 @@ import '@mantine/core/styles.css'
 import './globals.css'
 
 import { ColorSchemeScript, MantineProvider } from '@mantine/core'
+import AuthProvider from './context/auth'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -26,7 +27,9 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <MantineProvider>
-          <div id="app">{children}</div>
+          <AuthProvider>
+            <div id="app">{children}</div>
+          </AuthProvider>
         </MantineProvider>
       </body>
     </html>

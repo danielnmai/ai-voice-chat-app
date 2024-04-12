@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosPromise } from 'axios'
+import { User } from '../context/auth'
 
 type PostChatType = {
   language: string
@@ -6,8 +7,8 @@ type PostChatType = {
   source: 'client' | 'server'
 }
 
-type AuthType = {
-  username: string
+type LoginType = {
+  email: string
   password: string
 }
 
@@ -22,21 +23,24 @@ class APIService {
 
   axiosInstance: AxiosInstance
 
-  constructor(auth: AuthType) {
+  constructor() {
     this.axiosInstance = axios.create({
       baseURL: this.BASE_URL,
       timeout: 30000,
-      headers: { 'Content-Type': 'application/json' },
-      auth
+      headers: { 'Content-Type': 'application/json' }
     })
   }
 
   postChat(payload: PostChatType): AxiosPromise<PostChatResult> {
-    return this.axiosInstance.post('', payload)
+    return this.axiosInstance.post('/chats', payload)
   }
 
   getChatAudioURL(chatId: number) {
-    return `${this.BASE_URL}${chatId}/audio/`
+    return `${this.BASE_URL}${chatId}/chats/audio/`
+  }
+
+  login(payload: LoginType): AxiosPromise<User> {
+    return this.axiosInstance.post('/users/login', payload)
   }
 }
 
