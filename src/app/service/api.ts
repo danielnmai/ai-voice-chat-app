@@ -1,5 +1,4 @@
 import axios, { AxiosInstance, AxiosPromise } from 'axios'
-import { User } from '../context/auth'
 
 type PostChatType = {
   language: string

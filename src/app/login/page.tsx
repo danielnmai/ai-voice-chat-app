@@ -16,7 +16,7 @@ type FormType = {
 const Login = () => {
   const [type, toggle] = useToggle(['login', 'register'])
   const router = useRouter()
-  const { loginUser, loggedInUser } = useAuth()
+  const { loginUser } = useAuth()
   // const { loggedInUser } = useContext(AuthContext)
   const form = useForm({
     initialValues: {
