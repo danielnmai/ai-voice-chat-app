@@ -23,6 +23,7 @@ const Login = () => {
 
   // user already logged in
   useEffect(() => {
+    console.log('logged in user ', loggedInUser)
     if (loggedInUser) {
       router.push('/')
     }

@@ -5,8 +5,10 @@ import 'regenerator-runtime/runtime'
 import { Button, TextInput } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { AxiosError } from 'axios'
-import { useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useContext, useEffect, useRef, useState } from 'react'
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
+import { AuthContext } from '../context/auth'
 import APIService from '../service/api'
 
 type ChatCardType = {
@@ -14,7 +16,7 @@ type ChatCardType = {
   content: string
 }
 
-function ChatMessage({ title, content }: ChatCardType) {
+const ChatMessage = ({ title, content }: ChatCardType) => {
   return (
     <div className="mb-4 w-3/4 md:w-1/2 self-center">
       <h3 className="font-bold my-2">{title}</h3>
@@ -25,10 +27,19 @@ function ChatMessage({ title, content }: ChatCardType) {
 
 const Chat = () => {
   const [input, setInput] = useState('')
+  const router = useRouter()
   const [voiceEnabled, setVoiceEnabled] = useState(false)
   const [isListening, setIsListening] = useState(false)
   const [voiceChatId, setVoiceChatId] = useState<number>()
   const [messages, setMessages] = useState<ChatCardType[]>([])
+  const { loggedInUser } = useContext(AuthContext)
+
+  // user not login
+  useEffect(() => {
+    if (!loggedInUser) {
+      router.push('/login')
+    }
+  }, [])
   const {
     // listening,
     // isMicrophoneAvailable,
