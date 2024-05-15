@@ -1,8 +1,11 @@
 'use client'
 
 import 'regenerator-runtime/runtime'
+
 import { Button, TextInput } from '@mantine/core'
-import React, { useState, useEffect, useRef } from 'react'
+import { notifications } from '@mantine/notifications'
+import { AxiosError } from 'axios'
+import { useEffect, useRef, useState } from 'react'
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
 import APIService from '../service/api'
 
@@ -13,7 +16,7 @@ type ChatCardType = {
 
 function ChatMessage({ title, content }: ChatCardType) {
   return (
-    <div className="mb-4 w-3/4 self-center">
+    <div className="mb-4 w-3/4 md:w-1/2 self-center">
       <h3 className="font-bold my-2">{title}</h3>
       <p>{content}</p>
     </div>
@@ -57,9 +60,13 @@ const Chat = () => {
 
       setMessages([...latestMessages, { title: 'AI', content }])
       resetInput()
-    } catch (error) {
+    } catch (error: unknown) {
       resetInput()
-      console.log(error)
+      if (error instanceof AxiosError) {
+        notifications.show({ color: 'red', title: 'Error', message: error.message })
+      } else {
+        notifications.show({ color: 'red', title: 'Error', message: 'Oops, that did not work. Please try again' })
+      }
     }
   }
 

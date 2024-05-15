@@ -29,7 +29,11 @@ const App = () => {
       <AppShell.Main>
         <Chat />
       </AppShell.Main>
-      <AppShell.Footer>Footer</AppShell.Footer>
+      <AppShell.Footer>
+        <div className="flex justify-center items-center h-full">
+          <small>&copy; Copyright 2024, Daniel Mai</small>
+        </div>
+      </AppShell.Footer>
     </AppShell>
   )
 }
