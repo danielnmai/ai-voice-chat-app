@@ -22,7 +22,6 @@ const App = () => {
     >
       <AppShell.Header>
         <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-        <div>Logo</div>
       </AppShell.Header>
 
       <AppShell.Navbar></AppShell.Navbar>

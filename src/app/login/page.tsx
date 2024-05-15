@@ -1,11 +1,13 @@
 'use client'
 
-import { useToggle, upperFirst } from '@mantine/hooks'
-import { useForm, isEmail } from '@mantine/form'
-import { TextInput, PasswordInput, Text, Paper, Group, Button, Anchor, Stack, Center } from '@mantine/core'
-import APIService from '../service/api'
+import { Anchor, Button, Center, Group, Paper, PasswordInput, Stack, Text, TextInput } from '@mantine/core'
+import { isEmail, useForm } from '@mantine/form'
+import { upperFirst, useToggle } from '@mantine/hooks'
 import { useRouter } from 'next/navigation'
+import { useContext, useEffect } from 'react'
+import { AuthContext } from '../context/auth'
 import useAuth from '../hooks/useAuth'
+import APIService from '../service/api'
 
 type FormType = {
   email: string
@@ -17,7 +19,15 @@ const Login = () => {
   const [type, toggle] = useToggle(['login', 'register'])
   const router = useRouter()
   const { loginUser } = useAuth()
-  // const { loggedInUser } = useContext(AuthContext)
+  const { loggedInUser } = useContext(AuthContext)
+
+  // user already logged in
+  useEffect(() => {
+    if (loggedInUser) {
+      router.push('/')
+    }
+  }, [])
+
   const form = useForm({
     initialValues: {
       email: '',
