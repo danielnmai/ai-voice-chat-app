@@ -14,6 +14,7 @@ import APIService from '../service/api'
 type ChatCardType = {
   title: string
   content: string
+  sessionId?: number
 }
 
 const ChatMessage = ({ title, content }: ChatCardType) => {
@@ -27,6 +28,7 @@ const ChatMessage = ({ title, content }: ChatCardType) => {
 
 const Chat = () => {
   const [input, setInput] = useState('')
+  const [sessionId, setSessionId] = useState<number>()
   const router = useRouter()
   const [voiceEnabled, setVoiceEnabled] = useState(false)
   const [isListening, setIsListening] = useState(false)
@@ -63,21 +65,26 @@ const Chat = () => {
   const postMessage = async (message: string, latestMessages: ChatCardType[]) => {
     try {
       const response = await api.postChat({ language: 'en', content: message, source: 'client' })
-      const { content, id } = response.data
+      const { content, id, sessionId: serverSessionId } = response.data
+
+      // store the sessionId sent from server
+      if (serverSessionId && !sessionId) {
+        setSessionId(sessionId)
+      }
 
       if (voiceEnabled) {
         setVoiceChatId(id)
       }
 
-      setMessages([...latestMessages, { title: 'AI', content }])
-      resetInput()
+      setMessages([...latestMessages, { title: 'AI', content, sessionId }])
     } catch (error: unknown) {
-      resetInput()
       if (error instanceof AxiosError) {
         notifications.show({ color: 'red', title: 'Error', message: error.message })
       } else {
         notifications.show({ color: 'red', title: 'Error', message: 'Oops, that did not work. Please try again' })
       }
+    } finally {
+      resetInput()
     }
   }
 

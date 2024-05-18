@@ -4,8 +4,6 @@ import { Anchor, Button, Center, Group, Paper, PasswordInput, Stack, Text, TextI
 import { isEmail, useForm } from '@mantine/form'
 import { upperFirst, useToggle } from '@mantine/hooks'
 import { useRouter } from 'next/navigation'
-import { useContext, useEffect } from 'react'
-import { AuthContext } from '../context/auth'
 import useAuth from '../hooks/useAuth'
 import APIService from '../service/api'
 
@@ -19,15 +17,6 @@ const Login = () => {
   const [type, toggle] = useToggle(['login', 'register'])
   const router = useRouter()
   const { loginUser } = useAuth()
-  const { loggedInUser } = useContext(AuthContext)
-
-  // user already logged in
-  useEffect(() => {
-    console.log('logged in user ', loggedInUser)
-    if (loggedInUser) {
-      router.push('/')
-    }
-  }, [])
 
   const form = useForm({
     initialValues: {

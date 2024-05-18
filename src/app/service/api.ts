@@ -16,6 +16,7 @@ type PostChatResult = {
   id: number
   source: 'server' | 'client'
   content: string
+  sessionId?: number
 }
 
 class APIService {
