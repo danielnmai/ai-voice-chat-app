@@ -15,6 +15,7 @@ type ChatCardType = {
   title: string
   content: string
   sessionId?: number
+  chatId?: number
 }
 
 const ChatMessage = ({ title, content }: ChatCardType) => {

@@ -5,6 +5,8 @@ type PostChatType = {
   language: string
   content: string
   source: 'client' | 'server'
+  sessionId?: number
+  chatId?: number
 }
 
 type LoginType = {
