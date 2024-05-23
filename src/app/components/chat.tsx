@@ -9,19 +9,16 @@ import { useRouter } from 'next/navigation'
 import { useContext, useEffect, useRef, useState } from 'react'
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
 import { AuthContext } from '../context/auth'
-import APIService from '../service/api'
+import APIService, { ChatType } from '../service/api'
 
-type ChatCardType = {
-  title: string
+type ChatMessageType = {
+  source: string
   content: string
-  sessionId?: number
-  chatId?: number
 }
-
-const ChatMessage = ({ title, content }: ChatCardType) => {
+const ChatMessage = ({ source, content }: ChatMessageType) => {
   return (
     <div className="mb-4 w-3/4 md:w-1/2 self-center">
-      <h3 className="font-bold my-2">{title}</h3>
+      <h3 className="font-bold my-2">{source}</h3>
       <p>{content}</p>
     </div>
   )
@@ -34,22 +31,10 @@ const Chat = () => {
   const [voiceEnabled, setVoiceEnabled] = useState(false)
   const [isListening, setIsListening] = useState(false)
   const [voiceChatId, setVoiceChatId] = useState<number>()
-  const [messages, setMessages] = useState<ChatCardType[]>([])
+  const [chats, setChats] = useState<ChatType[]>([])
   const { loggedInUser } = useContext(AuthContext)
 
-  // user not login
-  useEffect(() => {
-    if (!loggedInUser) {
-      router.push('/login')
-    }
-  }, [])
-  const {
-    // listening,
-    // isMicrophoneAvailable,
-    finalTranscript,
-    resetTranscript
-    // browserSupportsSpeechRecognition,
-  } = useSpeechRecognition()
+  const { finalTranscript, resetTranscript } = useSpeechRecognition()
   const messageEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -61,23 +46,29 @@ const Chat = () => {
     setInput('')
   }
 
-  const api = new APIService()
+  if (!loggedInUser) {
+    return router.push('/login')
+  }
 
-  const postMessage = async (message: string, latestMessages: ChatCardType[]) => {
+  const api = new APIService(loggedInUser.authToken)
+
+  const handlePostChat = async (content: string) => {
     try {
-      const response = await api.postChat({ language: 'en', content: message, source: 'client' })
-      const { content, id, sessionId: serverSessionId } = response.data
+      const userChat: ChatType = { sessionId, language: 'en', content, source: 'client' }
+      setChats([...chats, userChat])
 
-      // store the sessionId sent from server
-      if (serverSessionId && !sessionId) {
-        setSessionId(sessionId)
-      }
+      const response = await api.postChat(userChat)
+
+      const serverChat = response.data
+      const { id, sessionId: serverSessionId } = serverChat
+
+      setSessionId(serverSessionId)
 
       if (voiceEnabled) {
         setVoiceChatId(id)
       }
 
-      setMessages([...latestMessages, { title: 'AI', content, sessionId }])
+      setChats([...chats, userChat, serverChat])
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
         notifications.show({ color: 'red', title: 'Error', message: error.message })
@@ -89,17 +80,9 @@ const Chat = () => {
     }
   }
 
-  const onClick = async () => {
-    const latestMessages = [...messages, { title: 'You', content: input }]
-    setMessages(latestMessages)
-    await postMessage(input, latestMessages)
-  }
+  const onTextInput = () => handlePostChat(input)
 
-  const onVoiceInput = async (message: string) => {
-    const latestMessages = [...messages, { title: 'You', content: message }]
-    setMessages(latestMessages)
-    await postMessage(message, latestMessages)
-  }
+  const onVoiceInput = (transcript: string) => handlePostChat(transcript)
 
   const toggleVoiceResponse = () => {
     setVoiceEnabled(!voiceEnabled)
@@ -112,7 +95,7 @@ const Chat = () => {
   // scroll to the latest message
   useEffect(() => {
     scrollToBottom()
-  }, [messages])
+  }, [chats])
 
   // trigger microphone input
   useEffect(() => {
@@ -133,13 +116,13 @@ const Chat = () => {
   return (
     <div className="flex flex-col">
       <div className="flex flex-col overflow-y-auto h-[calc(100vh-220px)] w-full">
-        {messages.map(({ title, content }, index) => (
-          <ChatMessage key={index} title={title} content={content} />
+        {chats.map(({ source, content }, index) => (
+          <ChatMessage key={index} source={source} content={content} />
         ))}
         <div ref={messageEndRef} className="self-center">
           {voiceEnabled && voiceChatId && (
             <audio id="ai-voice" src={api.getChatAudioURL(voiceChatId)} autoPlay>
-              <track kind="captions" content={messages[messages.length - 1].content} />
+              <track kind="captions" content={chats[chats.length - 1].content} />
             </audio>
           )}
         </div>
@@ -157,7 +140,7 @@ const Chat = () => {
         </div>
         <TextInput placeholder="How can I help?" onChange={(event) => setInput(event.target.value)} value={input} />
 
-        <Button variant="outline" onClick={onClick} className="self-end my-2">
+        <Button variant="outline" onClick={onTextInput} className="self-end my-2">
           Send
         </Button>
       </div>

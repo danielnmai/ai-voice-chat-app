@@ -1,12 +1,12 @@
 import axios, { AxiosInstance, AxiosPromise } from 'axios'
 import { User } from '../hooks/useAuth'
 
-type PostChatType = {
+export type ChatType = {
   language: string
   content: string
   source: 'client' | 'server'
   sessionId?: number
-  chatId?: number
+  id?: number
 }
 
 type LoginType = {
@@ -14,9 +14,10 @@ type LoginType = {
   password: string
 }
 
-type PostChatResult = {
+type PostChatResponse = {
   id: number
   source: 'server' | 'client'
+  language: string
   content: string
   sessionId?: number
 }
@@ -26,15 +27,15 @@ class APIService {
 
   axiosInstance: AxiosInstance
 
-  constructor() {
+  constructor(authToken?: string) {
     this.axiosInstance = axios.create({
       baseURL: this.BASE_URL,
       timeout: 30000,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + authToken }
     })
   }
 
-  postChat(payload: PostChatType): AxiosPromise<PostChatResult> {
+  postChat(payload: ChatType): AxiosPromise<PostChatResponse> {
     return this.axiosInstance.post('/chats', payload)
   }
 
