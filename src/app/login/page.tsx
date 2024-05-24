@@ -16,7 +16,7 @@ type FormType = {
 const Login = () => {
   const [type, toggle] = useToggle(['login', 'register'])
   const router = useRouter()
-  const { loginUser } = useAuth()
+  const { loginUser, logoutUser } = useAuth()
 
   const form = useForm({
     initialValues: {
@@ -45,6 +45,11 @@ const Login = () => {
     } catch (err) {
       console.log(err)
     }
+  }
+
+  const handleLogout = () => {
+    logoutUser()
+    router.push('/login')
   }
 
   return (
@@ -93,6 +98,7 @@ const Login = () => {
             <Button type="submit">{upperFirst(type)}</Button>
           </Group>
         </form>
+        <Button onClick={handleLogout}>Log Out</Button>
       </Paper>
     </Center>
   )

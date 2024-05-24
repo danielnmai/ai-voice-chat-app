@@ -4,6 +4,7 @@ import 'regenerator-runtime/runtime'
 
 import { Button, TextInput } from '@mantine/core'
 import { readLocalStorageValue } from '@mantine/hooks'
+import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
 import useAuth from '../hooks/useAuth'
@@ -29,6 +30,7 @@ const Chat = () => {
   const [sessionId, setSessionId] = useState<number>(storedSessionId)
   const { saveSessionId } = useSession()
   const [input, setInput] = useState('')
+  const router = useRouter()
   const { loggedInUser } = useAuth()
   const [voiceEnabled, setVoiceEnabled] = useState(false)
   const [isListening, setIsListening] = useState(false)
@@ -52,6 +54,13 @@ const Chat = () => {
     fetchChats()
   }, [])
 
+  // Direct user to login
+  useEffect(() => {
+    if (!loggedInUser) {
+      router.replace('/login')
+    }
+  }, [loggedInUser])
+
   const scrollToBottom = () => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
@@ -71,7 +80,7 @@ const Chat = () => {
       const serverChat = response.data
       const { id, sessionId: serverSessionId } = serverChat
 
-      if (serverSessionId && !sessionId) {
+      if (serverSessionId && serverSessionId != sessionId) {
         setSessionId(serverSessionId)
         saveSessionId(serverSessionId)
       }
