@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosPromise } from 'axios'
+import axios, { AxiosError, AxiosInstance, AxiosPromise } from 'axios'
 import { User } from '../hooks/useAuth'
 
 export type ChatType = {
@@ -7,6 +7,11 @@ export type ChatType = {
   source: 'client' | 'server'
   sessionId?: number
   id?: number
+}
+
+export type GetChatsParams = {
+  sessionId?: number
+  userId?: number
 }
 
 type LoginType = {
@@ -27,12 +32,22 @@ class APIService {
 
   axiosInstance: AxiosInstance
 
-  constructor(authToken?: string) {
+  constructor() {
     this.axiosInstance = axios.create({
       baseURL: this.BASE_URL,
-      timeout: 30000,
-      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + authToken }
+      timeout: 30000
     })
+
+    this.axiosInstance.interceptors.response.use(
+      (response) => {
+        return response
+      },
+      (error) => {
+        if (error instanceof AxiosError && error.response?.status == 401) {
+          window.location.href = '/login'
+        }
+      }
+    )
   }
 
   postChat(payload: ChatType): AxiosPromise<PostChatResponse> {
@@ -41,6 +56,10 @@ class APIService {
 
   getChatAudioURL(chatId: number) {
     return `${this.BASE_URL}${chatId}/chats/audio/`
+  }
+
+  getChats(params: GetChatsParams) {
+    return this.axiosInstance.get('/chats', { params })
   }
 
   login(payload: LoginType): AxiosPromise<User> {

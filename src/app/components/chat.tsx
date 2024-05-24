@@ -3,13 +3,13 @@
 import 'regenerator-runtime/runtime'
 
 import { Button, TextInput } from '@mantine/core'
-import { notifications } from '@mantine/notifications'
-import { AxiosError } from 'axios'
-import { useRouter } from 'next/navigation'
-import { useContext, useEffect, useRef, useState } from 'react'
+import { readLocalStorageValue } from '@mantine/hooks'
+import { useEffect, useRef, useState } from 'react'
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
-import { AuthContext } from '../context/auth'
+import useAuth from '../hooks/useAuth'
+import useSession from '../hooks/useSession'
 import APIService, { ChatType } from '../service/api'
+import handleError from '../service/handleError'
 
 type ChatMessageType = {
   source: string
@@ -25,17 +25,32 @@ const ChatMessage = ({ source, content }: ChatMessageType) => {
 }
 
 const Chat = () => {
+  const storedSessionId = readLocalStorageValue({ key: 'sessionId' }) as number
+  const [sessionId, setSessionId] = useState<number>(storedSessionId)
+  const { saveSessionId } = useSession()
   const [input, setInput] = useState('')
-  const [sessionId, setSessionId] = useState<number>()
-  const router = useRouter()
+  const { loggedInUser } = useAuth()
   const [voiceEnabled, setVoiceEnabled] = useState(false)
   const [isListening, setIsListening] = useState(false)
   const [voiceChatId, setVoiceChatId] = useState<number>()
   const [chats, setChats] = useState<ChatType[]>([])
-  const { loggedInUser } = useContext(AuthContext)
-
   const { finalTranscript, resetTranscript } = useSpeechRecognition()
   const messageEndRef = useRef<HTMLDivElement>(null)
+  const API = new APIService()
+
+  // fetch chat history based on stored information
+  useEffect(() => {
+    const fetchChats = async () => {
+      if (loggedInUser && storedSessionId) {
+        const { data } = await API.getChats({
+          userId: loggedInUser.id,
+          sessionId: storedSessionId
+        })
+        setChats(data)
+      }
+    }
+    fetchChats()
+  }, [])
 
   const scrollToBottom = () => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -46,23 +61,20 @@ const Chat = () => {
     setInput('')
   }
 
-  if (!loggedInUser) {
-    return router.push('/login')
-  }
-
-  const api = new APIService(loggedInUser.authToken)
-
   const handlePostChat = async (content: string) => {
     try {
       const userChat: ChatType = { sessionId, language: 'en', content, source: 'client' }
       setChats([...chats, userChat])
 
-      const response = await api.postChat(userChat)
+      const response = await API.postChat(userChat)
 
       const serverChat = response.data
       const { id, sessionId: serverSessionId } = serverChat
 
-      setSessionId(serverSessionId)
+      if (serverSessionId && !sessionId) {
+        setSessionId(serverSessionId)
+        saveSessionId(serverSessionId)
+      }
 
       if (voiceEnabled) {
         setVoiceChatId(id)
@@ -70,11 +82,7 @@ const Chat = () => {
 
       setChats([...chats, userChat, serverChat])
     } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-        notifications.show({ color: 'red', title: 'Error', message: error.message })
-      } else {
-        notifications.show({ color: 'red', title: 'Error', message: 'Oops, that did not work. Please try again' })
-      }
+      handleError(error)
     } finally {
       resetInput()
     }
