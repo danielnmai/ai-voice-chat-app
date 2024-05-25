@@ -6,6 +6,7 @@ import { upperFirst, useToggle } from '@mantine/hooks'
 import { useRouter } from 'next/navigation'
 import useAuth from '../hooks/useAuth'
 import APIService from '../service/api'
+import handleError from '../service/handleError'
 
 type FormType = {
   email: string
@@ -43,7 +44,7 @@ const Login = () => {
         router.push('/')
       }
     } catch (err) {
-      console.log(err)
+      handleError(err)
     }
   }
 

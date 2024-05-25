@@ -3,33 +3,37 @@
 import { AppShell, Burger } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import Chat from './components/chat'
+import Header from './components/header'
 
 const App = () => {
-  const [opened, { toggle }] = useDisclosure()
+  const [mobileOpened, { toggle }] = useDisclosure(false)
 
   return (
     <AppShell
-      header={{ height: 40, collapsed: false }}
+      header={{ height: 50, collapsed: false }}
       navbar={{
         width: 300,
         breakpoint: 'sm',
-        collapsed: { mobile: true, desktop: true }
+        collapsed: { mobile: !mobileOpened, desktop: true }
       }}
       footer={{
         height: 40
       }}
       id="app"
     >
-      <AppShell.Header>
-        <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
+      <AppShell.Header withBorder={false}>
+        <Burger opened={mobileOpened} onClick={toggle} aria-label="toggle navigation" hiddenFrom="sm" />
+        <Header />
       </AppShell.Header>
 
-      <AppShell.Navbar></AppShell.Navbar>
+      <AppShell.Navbar>
+        <div>Navbar here</div>
+      </AppShell.Navbar>
 
       <AppShell.Main>
         <Chat />
       </AppShell.Main>
-      <AppShell.Footer>
+      <AppShell.Footer withBorder={false}>
         <div className="flex justify-center items-center h-full">
           <small>&copy; Copyright 2024, Daniel Mai</small>
         </div>

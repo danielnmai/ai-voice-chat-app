@@ -61,6 +61,7 @@ const Chat = () => {
     }
   }, [loggedInUser])
 
+  // auto scroll to end of chat
   const scrollToBottom = () => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
@@ -132,13 +133,13 @@ const Chat = () => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex flex-col overflow-y-auto h-[calc(100vh-220px)] w-full">
+      <div className="flex flex-col overflow-y-auto h-[calc(100vh-230px)] w-full">
         {chats.map(({ source, content }, index) => (
           <ChatMessage key={index} source={source} content={content} />
         ))}
         <div ref={messageEndRef} className="self-center">
           {voiceEnabled && voiceChatId && (
-            <audio id="ai-voice" src={api.getChatAudioURL(voiceChatId)} autoPlay>
+            <audio id="ai-voice" src={API.getChatAudioURL(voiceChatId)} autoPlay>
               <track kind="captions" content={chats[chats.length - 1].content} />
             </audio>
           )}
