@@ -3,15 +3,17 @@
 import { Anchor, Button, Center, Group, Paper, PasswordInput, Stack, Text, TextInput } from '@mantine/core'
 import { isEmail, useForm } from '@mantine/form'
 import { upperFirst, useToggle } from '@mantine/hooks'
+import { notifications } from '@mantine/notifications'
 import { useRouter } from 'next/navigation'
 import useAuth from '../hooks/useAuth'
 import APIService from '../service/api'
 import handleError from '../service/handleError'
 
-type FormType = {
+export type UserFormType = {
   email: string
   password: string
-  name?: string
+  firstName?: string
+  lastName?: string
 }
 
 const Login = () => {
@@ -22,7 +24,8 @@ const Login = () => {
   const form = useForm({
     initialValues: {
       email: '',
-      name: '',
+      firstName: '',
+      lastName: '',
       password: ''
     },
 
@@ -32,16 +35,29 @@ const Login = () => {
     }
   })
 
-  const handleSubmit = async (values: FormType) => {
+  const handleSubmit = async (values: UserFormType) => {
     try {
+      const api = new APIService()
       if (type == 'login') {
-        const api = new APIService()
         const { email, password } = values
         const { data } = await api.login({ email, password })
 
         loginUser(data)
         form.reset()
         router.push('/')
+      } else {
+        const { email, password, firstName, lastName } = values
+        const response = await api.postUser({ email, password, firstName, lastName })
+
+        if (response && response.data) {
+          notifications.show({
+            color: 'green',
+            title: 'Success',
+            message: 'User created. Please log in with your credentials.'
+          })
+          form.reset()
+          toggle()
+        }
       }
     } catch (err) {
       handleError(err)
@@ -62,13 +78,23 @@ const Login = () => {
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <Stack>
             {type === 'register' && (
-              <TextInput
-                label="Name"
-                placeholder="Your name"
-                value={form.values.name}
-                onChange={(event) => form.setFieldValue('name', event.currentTarget.value)}
-                radius="md"
-              />
+              <>
+                <TextInput
+                  label="First"
+                  placeholder="First"
+                  value={form.values.firstName}
+                  onChange={(event) => form.setFieldValue('firstName', event.currentTarget.value)}
+                  radius="md"
+                />
+
+                <TextInput
+                  label="Last"
+                  placeholder="Last"
+                  value={form.values.lastName}
+                  onChange={(event) => form.setFieldValue('lastName', event.currentTarget.value)}
+                  radius="md"
+                />
+              </>
             )}
 
             <TextInput

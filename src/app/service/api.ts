@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosInstance, AxiosPromise } from 'axios'
 import { User } from '../hooks/useAuth'
+import { UserFormType } from '../login/page'
 
 export type ChatType = {
   language: string
@@ -46,6 +47,9 @@ class APIService {
         if (error instanceof AxiosError && error.response?.status == 401) {
           window.location.href = '/login'
         }
+        if (error instanceof AxiosError && error.response?.status == 500) {
+          return Promise.reject(error)
+        }
       }
     )
   }
@@ -64,6 +68,10 @@ class APIService {
 
   login(payload: LoginType): AxiosPromise<User> {
     return this.axiosInstance.post('/users/login', payload)
+  }
+
+  postUser(payload: UserFormType): AxiosPromise {
+    return this.axiosInstance.post('/users', payload)
   }
 }
 
