@@ -1,11 +1,13 @@
 import React from 'react'
 
+import '@mantine/core/styles.css'
+import '@mantine/notifications/styles.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import '@mantine/core/styles.css'
 import './globals.css'
 
 import { ColorSchemeScript, MantineProvider } from '@mantine/core'
+import { Notifications } from '@mantine/notifications'
 import AuthProvider from './context/auth'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -24,9 +26,10 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <ColorSchemeScript />
-      </head> 
+      </head>
       <body className={inter.className}>
         <MantineProvider>
+          <Notifications position="top-right" />
           <AuthProvider>
             <div id="app">{children}</div>
           </AuthProvider>

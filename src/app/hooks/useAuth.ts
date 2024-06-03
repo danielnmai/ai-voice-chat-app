@@ -1,9 +1,10 @@
+import { useLocalStorage } from '@mantine/hooks'
 import { useContext } from 'react'
 import { AuthContext } from '../context/auth'
-import { useLocalStorage } from '@mantine/hooks'
+import usePersistSession from './useSession'
 
 export interface User {
-  id: string
+  id: number
   name: string
   email: string
   authToken?: string
@@ -12,6 +13,7 @@ export interface User {
 const useAuth = () => {
   const { loggedInUser, setLoggedInUser } = useContext(AuthContext)
   const [, saveUser, removeUser] = useLocalStorage({ key: 'user', getInitialValueInEffect: false })
+  const { removeSessionId } = usePersistSession()
 
   const loginUser = (user: User) => {
     setLoggedInUser(user)
@@ -21,6 +23,7 @@ const useAuth = () => {
   const logoutUser = () => {
     setLoggedInUser(null)
     removeUser()
+    removeSessionId()
   }
 
   return { loggedInUser, setLoggedInUser, loginUser, logoutUser }
