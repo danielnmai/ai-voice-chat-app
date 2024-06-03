@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosInstance, AxiosPromise } from 'axios'
 import { User } from '../hooks/useAuth'
-import { UserFormType } from '../login/page'
+import { UserFormType } from '../loginsignup/page'
 
 export type ChatType = {
   language: string

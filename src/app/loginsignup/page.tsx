@@ -2,9 +2,10 @@
 
 import { Anchor, Button, Center, Group, Paper, PasswordInput, Stack, Text, TextInput } from '@mantine/core'
 import { isEmail, useForm } from '@mantine/form'
-import { upperFirst, useToggle } from '@mantine/hooks'
+import { upperFirst } from '@mantine/hooks'
 import { notifications } from '@mantine/notifications'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useState } from 'react'
 import useAuth from '../hooks/useAuth'
 import APIService from '../service/api'
 import handleError from '../service/handleError'
@@ -16,10 +17,15 @@ export type UserFormType = {
   lastName?: string
 }
 
-const Login = () => {
-  const [type, toggle] = useToggle(['login', 'register'])
+type LoginSignupType = 'login' | 'signup'
+
+const LoginSignUp = () => {
+  const params = useSearchParams()
+  const defaultType = params.get('type') as LoginSignupType
+
+  const [type, setType] = useState<LoginSignupType>(defaultType || 'login')
   const router = useRouter()
-  const { loginUser, logoutUser } = useAuth()
+  const { loginUser } = useAuth()
 
   const form = useForm({
     initialValues: {
@@ -34,6 +40,11 @@ const Login = () => {
       password: (val: string) => val.length < 4 && 'Password should include at least 4 characters'
     }
   })
+
+  const toggleType = () => {
+    if (type == 'login') setType('signup')
+    else setType('login')
+  }
 
   const handleSubmit = async (values: UserFormType) => {
     try {
@@ -56,17 +67,12 @@ const Login = () => {
             message: 'User created. Please log in with your credentials.'
           })
           form.reset()
-          toggle()
+          setType('login')
         }
       }
     } catch (err) {
       handleError(err)
     }
-  }
-
-  const handleLogout = () => {
-    logoutUser()
-    router.push('/login')
   }
 
   return (
@@ -77,7 +83,7 @@ const Login = () => {
         </Text>
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <Stack>
-            {type === 'register' && (
+            {type === 'signup' && (
               <>
                 <TextInput
                   label="First"
@@ -119,16 +125,15 @@ const Login = () => {
           </Stack>
 
           <Group mt="xl">
-            <Anchor component="button" type="button" onClick={() => toggle()} size="xs">
-              {type === 'register' ? 'Already have an account? Login' : "Don't have an account? Register"}
+            <Anchor component="button" type="button" onClick={toggleType} size="xs">
+              {type === 'signup' ? 'Already have an account? Login' : "Don't have an account? Sign up"}
             </Anchor>
             <Button type="submit">{upperFirst(type)}</Button>
           </Group>
         </form>
-        <Button onClick={handleLogout}>Log Out</Button>
       </Paper>
     </Center>
   )
 }
 
-export default Login
+export default LoginSignUp

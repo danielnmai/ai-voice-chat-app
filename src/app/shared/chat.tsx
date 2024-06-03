@@ -57,7 +57,7 @@ const Chat = () => {
   // Direct user to login
   useEffect(() => {
     if (!loggedInUser) {
-      router.replace('/login')
+      router.replace('/loginsignup')
     }
   }, [loggedInUser])
 

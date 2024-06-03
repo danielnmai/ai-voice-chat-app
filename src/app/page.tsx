@@ -2,8 +2,8 @@
 
 import { AppShell, Burger } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
-import Chat from './components/chat'
-import Header from './components/header'
+import Chat from './shared/chat'
+import Header from './shared/header'
 
 const App = () => {
   const [mobileOpened, { toggle }] = useDisclosure(false)
