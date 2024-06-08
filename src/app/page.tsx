@@ -4,6 +4,7 @@ import { AppShell, Burger } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import Chat from './shared/chat'
 import Header from './shared/header'
+import Landing from './shared/landing'
 
 const App = () => {
   const [mobileOpened, { toggle }] = useDisclosure(false)
@@ -19,18 +20,16 @@ const App = () => {
       footer={{
         height: 40
       }}
-      id="app"
     >
       <AppShell.Header withBorder={false}>
         <Burger opened={mobileOpened} onClick={toggle} aria-label="toggle navigation" hiddenFrom="sm" />
         <Header />
       </AppShell.Header>
 
-      <AppShell.Navbar>
-        <div>Navbar here</div>
-      </AppShell.Navbar>
+      <AppShell.Navbar></AppShell.Navbar>
 
       <AppShell.Main>
+        <Landing />
         <Chat />
       </AppShell.Main>
       <AppShell.Footer withBorder={false}>

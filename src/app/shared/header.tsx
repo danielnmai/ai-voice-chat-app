@@ -21,7 +21,6 @@ const Header = () => {
   const onLogin = () => {}
 
   const onLogout = () => {
-    console.log('logging out...')
     logoutUser()
   }
 
