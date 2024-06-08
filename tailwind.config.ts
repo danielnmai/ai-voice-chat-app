@@ -11,7 +11,7 @@ const config: Config = {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-        hero: "linear-gradient(250deg, rgba(130, 201, 30, 0) 0%, #062343 70%), url('/landing-1.jpeg')"
+        hero: "linear-gradient(250deg, rgba(130, 201, 30, 0) 0%, #062343 70%), url('/landing.jpeg')"
       }
     }
   },
