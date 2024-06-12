@@ -29,8 +29,10 @@ const App = () => {
       <AppShell.Navbar></AppShell.Navbar>
 
       <AppShell.Main>
-        <Landing />
-        <Chat />
+        <>
+          <Landing />
+          <Chat />
+        </>
       </AppShell.Main>
       <AppShell.Footer withBorder={false}>
         <div className="flex justify-center items-center h-full">

@@ -2,8 +2,9 @@
 
 import 'regenerator-runtime/runtime'
 
-import { Button, TextInput } from '@mantine/core'
+import { ActionIcon, Button, TextInput } from '@mantine/core'
 import { readLocalStorageValue } from '@mantine/hooks'
+import { IconArrowUp } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
@@ -156,11 +157,19 @@ const Chat = () => {
             </Button>
           </div>
         </div>
-        <TextInput placeholder="How can I help?" onChange={(event) => setInput(event.target.value)} value={input} />
-
-        <Button variant="outline" onClick={onTextInput} className="self-end my-2">
-          Send
-        </Button>
+        <TextInput
+          placeholder="How can I help?"
+          onChange={(event) => setInput(event.target.value)}
+          value={input}
+          size="lg"
+          rightSection={
+            <ActionIcon size={36} mr={5}>
+              <IconArrowUp onClick={onTextInput} size="lg" width={20}>
+                Send
+              </IconArrowUp>
+            </ActionIcon>
+          }
+        />
       </div>
     </div>
   )

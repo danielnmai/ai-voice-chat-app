@@ -11,7 +11,7 @@ const Landing = () => {
           A helpful assistant that can listen to your voice and speak to you
         </Text>
         <div>
-          <Button className="text-3xl" variant="gradient" gradient={{ from: 'pink', to: 'yellow' }} size="xl" mb="lg">
+          <Button className="text-xl" variant="gradient" gradient={{ from: 'pink', to: 'yellow' }} size="xl" mb="lg">
             Get started
           </Button>
         </div>
