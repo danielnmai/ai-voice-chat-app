@@ -44,7 +44,7 @@ const Landing = () => {
               mb="md"
               onClick={scrollToChat}
             >
-              Give it a try!
+              Give it a try
             </Button>
           </Stack>
         </Container>
