@@ -45,7 +45,7 @@ class APIService {
       },
       (error) => {
         if (error instanceof AxiosError && error.response?.status == 401) {
-          window.location.href = '/login'
+          window.location.href = '/loginsignup'
         }
         if (error instanceof AxiosError && error.response?.status == 500) {
           return Promise.reject(error)

@@ -1,7 +1,7 @@
 'use client'
 
-import SharedApp from './shared/shareApp'
 import Landing from './shared/landing'
+import SharedApp from './shared/shareApp'
 
 const App = () => {
   return (

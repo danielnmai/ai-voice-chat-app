@@ -3,8 +3,9 @@
 import 'regenerator-runtime/runtime'
 
 import { ActionIcon, Button, TextInput } from '@mantine/core'
+import { getHotkeyHandler } from '@mantine/hooks'
 import { IconArrowUp } from '@tabler/icons-react'
-import { useEffect, useRef, useState } from 'react'
+import { RefObject, useEffect, useRef, useState } from 'react'
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
 import useSession from '../hooks/useSession'
 import APIService, { ChatType } from '../service/api'
@@ -26,10 +27,11 @@ type ChatComponentProps = {
   chats: ChatType[]
   setSessionId?: (id: number) => void
   setChats: (chats: ChatType[]) => void
+  chatComponentRef?: RefObject<HTMLDivElement>
 }
 
 const Chat = (props: ChatComponentProps) => {
-  const { chats, sessionId, setSessionId, setChats } = props
+  const { chats, sessionId, setSessionId, setChats, chatComponentRef } = props
   const { saveSessionId } = useSession()
   const [input, setInput] = useState('')
   const [voiceEnabled, setVoiceEnabled] = useState(false)
@@ -90,7 +92,9 @@ const Chat = (props: ChatComponentProps) => {
 
   // scroll to the latest message
   useEffect(() => {
-    scrollToBottom()
+    if (chats.length > 0) {
+      scrollToBottom()
+    }
   }, [chats])
 
   // trigger microphone input
@@ -123,7 +127,7 @@ const Chat = (props: ChatComponentProps) => {
           )}
         </div>
       </div>
-      <div className="flex flex-col self-center px-4 w-full md:w-1/2">
+      <div ref={chatComponentRef} className="flex flex-col self-center px-4 pt-4 w-full md:w-1/2">
         <div className="mb-2 self-center">
           <div className="flex">
             <Button variant="outline" className="mr-2" onClick={toggleVoiceInput}>
@@ -139,9 +143,10 @@ const Chat = (props: ChatComponentProps) => {
           onChange={(event) => setInput(event.target.value)}
           value={input}
           size="lg"
+          onKeyDown={getHotkeyHandler([['Enter', onTextInput]])}
           rightSection={
             <ActionIcon size={36} mr={5}>
-              <IconArrowUp onClick={onTextInput} size="lg" width={20}>
+              <IconArrowUp onClick={onTextInput} width={20}>
                 Send
               </IconArrowUp>
             </ActionIcon>
