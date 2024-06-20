@@ -47,15 +47,17 @@ class APIService {
         if (error instanceof AxiosError && error.response?.status == 401) {
           window.location.href = '/loginsignup'
         }
-        if (error instanceof AxiosError && error.response?.status == 500) {
-          return Promise.reject(error)
-        }
+        return Promise.reject(error)
       }
     )
   }
 
   postChat(payload: ChatType): AxiosPromise<PostChatResponse> {
     return this.axiosInstance.post('/chats', payload)
+  }
+
+  postChatDemo(payload: ChatType): AxiosPromise<PostChatResponse> {
+    return this.axiosInstance.post('/chats/demo', payload)
   }
 
   getChatAudioURL(chatId: number) {

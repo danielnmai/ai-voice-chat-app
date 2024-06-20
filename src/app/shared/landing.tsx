@@ -1,17 +1,49 @@
 'use client'
 
 import { Button, Container, Stack, Text, Title } from '@mantine/core'
+import { AxiosError } from 'axios'
 import Link from 'next/link'
 import { useRef, useState } from 'react'
-import { ChatType } from '../service/api'
+import { CallbackResetFunction } from '../chat/page'
+import APIService, { ChatType } from '../service/api'
 import Chat from './chat'
 
 const Landing = () => {
   const [chats, setChats] = useState<ChatType[]>([])
+  const [voiceEnabled, setVoiceEnabled] = useState<boolean>(false)
+  const [voiceChatId, setVoiceChatId] = useState<number>()
+  const [demoEnded, setDemoEnded] = useState<boolean>(false)
+
   const chatRef = useRef<HTMLDivElement>(null)
 
   const scrollToChat = () => {
     chatRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  const handlePostChat = async (content: string, reset: CallbackResetFunction) => {
+    try {
+      const API = new APIService()
+      const userChat: ChatType = { language: 'en', content, source: 'client' }
+      setChats([...chats, userChat])
+
+      const response = await API.postChatDemo(userChat)
+
+      if (response && response.data) {
+        const serverChat = response.data
+        const { id } = serverChat
+
+        if (voiceEnabled) {
+          setVoiceChatId(id)
+        }
+        setChats([...chats, userChat, serverChat])
+      }
+    } catch (error: unknown) {
+      if (error instanceof AxiosError && error.response?.status === 403) {
+        setDemoEnded(true)
+      }
+    } finally {
+      reset()
+    }
   }
 
   return (
@@ -50,7 +82,14 @@ const Landing = () => {
         </Container>
       </div>
       <div className="my-4">
-        <Chat chats={chats} setChats={setChats} chatComponentRef={chatRef} />
+        <Chat
+          chats={chats}
+          chatComponentRef={chatRef}
+          handlePostChat={handlePostChat}
+          voiceEnabled={voiceEnabled}
+          voiceChatId={voiceChatId}
+          setVoiceEnabled={setVoiceEnabled}
+        />
       </div>
     </div>
   )

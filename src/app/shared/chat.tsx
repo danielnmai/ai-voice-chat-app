@@ -7,9 +7,8 @@ import { getHotkeyHandler } from '@mantine/hooks'
 import { IconArrowUp } from '@tabler/icons-react'
 import { RefObject, useEffect, useRef, useState } from 'react'
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
-import useSession from '../hooks/useSession'
+import { CallbackResetFunction } from '../chat/page'
 import APIService, { ChatType } from '../service/api'
-import handleError from '../service/handleError'
 
 type ChatMessageType = Pick<ChatType, 'source' | 'content'>
 
@@ -25,21 +24,20 @@ const ChatMessage = ({ source, content }: ChatMessageType) => {
 type ChatComponentProps = {
   sessionId?: number
   chats: ChatType[]
-  setSessionId?: (id: number) => void
-  setChats: (chats: ChatType[]) => void
   chatComponentRef?: RefObject<HTMLDivElement>
+  handlePostChat: (content: string, callback: CallbackResetFunction) => void
+  voiceEnabled: boolean
+  setVoiceEnabled: (enabled: boolean) => void
+  voiceChatId?: number
 }
 
 const Chat = (props: ChatComponentProps) => {
-  const { chats, sessionId, setSessionId, setChats, chatComponentRef } = props
-  const { saveSessionId } = useSession()
+  const { chats, chatComponentRef, handlePostChat, voiceEnabled, setVoiceEnabled, voiceChatId } = props
   const [input, setInput] = useState('')
-  const [voiceEnabled, setVoiceEnabled] = useState(false)
-  const [isListening, setIsListening] = useState(false)
-  const [voiceChatId, setVoiceChatId] = useState<number>()
+  const [isListening, setIsListening] = useState<boolean>(false)
   const { finalTranscript, resetTranscript } = useSpeechRecognition()
-  const messageEndRef = useRef<HTMLDivElement>(null)
   const API = new APIService()
+  const messageEndRef = useRef<HTMLDivElement>(null)
 
   // auto scroll to end of chat
   const scrollToBottom = () => {
@@ -51,36 +49,9 @@ const Chat = (props: ChatComponentProps) => {
     setInput('')
   }
 
-  const handlePostChat = async (content: string) => {
-    try {
-      const userChat: ChatType = { sessionId, language: 'en', content, source: 'client' }
-      setChats([...chats, userChat])
+  const onTextInput = () => handlePostChat(input, resetInput)
 
-      const response = await API.postChat(userChat)
-
-      const serverChat = response.data
-      const { id, sessionId: serverSessionId } = serverChat
-
-      if (serverSessionId && serverSessionId != sessionId) {
-        if (setSessionId != undefined) setSessionId(serverSessionId)
-        saveSessionId(serverSessionId)
-      }
-
-      if (voiceEnabled) {
-        setVoiceChatId(id)
-      }
-
-      setChats([...chats, userChat, serverChat])
-    } catch (error: unknown) {
-      handleError(error)
-    } finally {
-      resetInput()
-    }
-  }
-
-  const onTextInput = () => handlePostChat(input)
-
-  const onVoiceInput = (transcript: string) => handlePostChat(transcript)
+  const onVoiceInput = (transcript: string) => handlePostChat(transcript, resetInput)
 
   const toggleVoiceResponse = () => {
     setVoiceEnabled(!voiceEnabled)
