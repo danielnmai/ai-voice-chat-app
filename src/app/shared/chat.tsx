@@ -2,9 +2,10 @@
 
 import 'regenerator-runtime/runtime'
 
-import { ActionIcon, Button, TextInput } from '@mantine/core'
+import { ActionIcon, Anchor, Button, Center, Container, List, Text, TextInput, ThemeIcon } from '@mantine/core'
 import { getHotkeyHandler } from '@mantine/hooks'
-import { IconArrowUp } from '@tabler/icons-react'
+import { IconArrowUp, IconCircleCheck } from '@tabler/icons-react'
+import Link from 'next/link'
 import { RefObject, useEffect, useRef, useState } from 'react'
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
 import { CallbackResetFunction } from '../chat/page'
@@ -29,10 +30,11 @@ type ChatComponentProps = {
   voiceEnabled: boolean
   setVoiceEnabled: (enabled: boolean) => void
   voiceChatId?: number
+  demoEnded?: boolean
 }
 
 const Chat = (props: ChatComponentProps) => {
-  const { chats, chatComponentRef, handlePostChat, voiceEnabled, setVoiceEnabled, voiceChatId } = props
+  const { chats, chatComponentRef, handlePostChat, voiceEnabled, setVoiceEnabled, voiceChatId, demoEnded } = props
   const [input, setInput] = useState('')
   const [isListening, setIsListening] = useState<boolean>(false)
   const { finalTranscript, resetTranscript } = useSpeechRecognition()
@@ -86,7 +88,7 @@ const Chat = (props: ChatComponentProps) => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex flex-col overflow-y-auto h-[calc(100vh-230px)] w-full">
+      <div className="flex flex-col overflow-y-auto h-[calc(100vh-300px)] w-full">
         {chats.map(({ source, content }, index) => (
           <ChatMessage key={index} source={source} content={content} />
         ))}
@@ -98,31 +100,62 @@ const Chat = (props: ChatComponentProps) => {
           )}
         </div>
       </div>
-      <div ref={chatComponentRef} className="flex flex-col self-center px-4 pt-4 w-full md:w-1/2">
-        <div className="mb-2 self-center">
-          <div className="flex">
-            <Button variant="outline" className="mr-2" onClick={toggleVoiceInput}>
-              {isListening ? 'Stop' : 'Start'} Talking
-            </Button>
-            <Button variant="outline" className="mr-2" onClick={toggleVoiceResponse}>
-              {voiceEnabled ? 'Disable' : 'Enable'} Voice Response
-            </Button>
+      <div className="flex flex-col self-center px-4 pt-4 w-full md:w-1/2 h-36">
+        {!demoEnded ? (
+          <div>
+            <Center mb={5}>
+              <div className="flex">
+                <Button variant="outline" className="mr-2" onClick={toggleVoiceInput}>
+                  {isListening ? 'Stop' : 'Start'} Talking
+                </Button>
+                <Button variant="outline" className="mr-2" onClick={toggleVoiceResponse}>
+                  {voiceEnabled ? 'Disable' : 'Enable'} Voice Response
+                </Button>
+              </div>
+            </Center>
+            <TextInput
+              placeholder="How can I help?"
+              onChange={(event) => setInput(event.target.value)}
+              value={input}
+              size="lg"
+              onKeyDown={getHotkeyHandler([['Enter', onTextInput]])}
+              rightSection={
+                <ActionIcon size={36} mr={5}>
+                  <IconArrowUp onClick={onTextInput} width={20}>
+                    Send
+                  </IconArrowUp>
+                </ActionIcon>
+              }
+            />
           </div>
-        </div>
-        <TextInput
-          placeholder="How can I help?"
-          onChange={(event) => setInput(event.target.value)}
-          value={input}
-          size="lg"
-          onKeyDown={getHotkeyHandler([['Enter', onTextInput]])}
-          rightSection={
-            <ActionIcon size={36} mr={5}>
-              <IconArrowUp onClick={onTextInput} width={20}>
-                Send
-              </IconArrowUp>
-            </ActionIcon>
-          }
-        />
+        ) : (
+          <Container>
+            <Text mb={5} size="lg">
+              Want to continue?{' '}
+              <Link href={{ pathname: '/loginsignup', query: { type: 'signup' } }}>
+                <Anchor>Sign up</Anchor>
+              </Link>{' '}
+              to get:
+            </Text>
+            <List
+              size="lg"
+              spacing={2}
+              icon={
+                <ThemeIcon color="blue" size={24} radius="l">
+                  <IconCircleCheck style={{ width: 16, height: 16 }} />
+                </ThemeIcon>
+              }
+            >
+              <List.Item>Custom chat prompt</List.Item>
+              <List.Item>Chat session</List.Item>
+              <List.Item>Chat history</List.Item>
+            </List>
+            <Text size="lg" mb={5}>
+              And many more for free!
+            </Text>
+          </Container>
+        )}
+        <div ref={chatComponentRef}></div>
       </div>
     </div>
   )

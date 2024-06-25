@@ -81,7 +81,7 @@ const Landing = () => {
           </Stack>
         </Container>
       </div>
-      <div className="my-4">
+      <div className="my-5">
         <Chat
           chats={chats}
           chatComponentRef={chatRef}
@@ -89,6 +89,7 @@ const Landing = () => {
           voiceEnabled={voiceEnabled}
           voiceChatId={voiceChatId}
           setVoiceEnabled={setVoiceEnabled}
+          demoEnded={demoEnded}
         />
       </div>
     </div>
