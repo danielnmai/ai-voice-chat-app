@@ -100,7 +100,7 @@ const Chat = (props: ChatComponentProps) => {
           )}
         </div>
       </div>
-      <div className="flex flex-col self-center px-4 pt-4 w-full md:w-1/2 h-36">
+      <div className="flex flex-col self-center px-4 pt-4 w-full md:w-1/2 h-44">
         {!demoEnded ? (
           <div>
             <Center mb={5}>
@@ -150,7 +150,7 @@ const Chat = (props: ChatComponentProps) => {
               <List.Item>Chat session</List.Item>
               <List.Item>Chat history</List.Item>
             </List>
-            <Text size="lg" mb={5}>
+            <Text size="lg" mb={5} mt={5}>
               And many more for free!
             </Text>
           </Container>
