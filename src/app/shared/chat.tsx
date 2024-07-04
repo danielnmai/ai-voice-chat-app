@@ -2,7 +2,7 @@
 
 import 'regenerator-runtime/runtime'
 
-import { ActionIcon, Anchor, Button, Center, Container, List, Text, TextInput, ThemeIcon } from '@mantine/core'
+import { ActionIcon, Button, Center, Container, List, Text, TextInput, ThemeIcon } from '@mantine/core'
 import { getHotkeyHandler } from '@mantine/hooks'
 import { IconArrowUp, IconCircleCheck } from '@tabler/icons-react'
 import Link from 'next/link'
@@ -133,8 +133,10 @@ const Chat = (props: ChatComponentProps) => {
             <Text mb={5} size="lg">
               Want to continue?{' '}
               <Link href={{ pathname: '/loginsignup', query: { type: 'signup' } }}>
-                <Anchor>Sign up</Anchor>
-              </Link>{' '}
+                <Text c="blue" span>
+                  Sign up{' '}
+                </Text>
+              </Link>
               to get:
             </Text>
             <List
