@@ -100,7 +100,7 @@ const Chat = (props: ChatComponentProps) => {
           )}
         </div>
       </div>
-      <div className="flex flex-col self-center px-4 pt-4 w-full md:w-1/2 h-44">
+      <div className="flex flex-col self-center px-4 pt-4 max-w-[700px] min-w-[300px] w-full h-44">
         {!demoEnded ? (
           <div>
             <Center mb={5}>
