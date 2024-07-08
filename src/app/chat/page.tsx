@@ -1,14 +1,35 @@
 'use client'
 import { Flex, ScrollArea } from '@mantine/core'
 import { readLocalStorageValue } from '@mantine/hooks'
+import dayjs from 'dayjs'
+import updateLocale from 'dayjs/plugin/updateLocale'
+import { groupBy } from 'lodash'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import 'regenerator-runtime/runtime'
 import useAuth from '../hooks/useAuth'
 import useSession from '../hooks/useSession'
-import APIService, { ChatType } from '../service/api'
+import APIService, { ChatSession, ChatType } from '../service/api'
 import handleError from '../service/handleError'
 import Chat from '../shared/chat'
+
+dayjs.extend(updateLocale)
+dayjs.updateLocale('en', {
+  months: [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+  ]
+})
 
 export type CallbackResetFunction = () => void
 
@@ -19,6 +40,7 @@ const ChatPage = () => {
   const [voiceChatId, setVoiceChatId] = useState<number>()
 
   const [chats, setChats] = useState<ChatType[]>([])
+  const [sessions, setSessions] = useState<ChatSession[]>([])
   const { loggedInUser } = useAuth()
   const router = useRouter()
   const { saveSessionId } = useSession()
@@ -37,6 +59,24 @@ const ChatPage = () => {
     }
     fetchChats()
   }, [])
+
+  // fetch chat sessions of the user
+  useEffect(() => {
+    const fetchChatSessions = async () => {
+      if (loggedInUser) {
+        const { data } = await API.getChatSessions({ userId: loggedInUser.id })
+        setSessions(data)
+      }
+    }
+    fetchChatSessions()
+  }, [])
+  const getMonthAndYear = (date: string) => {
+    return dayjs(date).format('MMMM YYYY')
+  }
+  if (sessions) {
+    const formatData = groupBy(sessions, ({ created }) => getMonthAndYear(created))
+    console.log('formatted data', formatData)
+  }
 
   // Redirect user if not logged in
   useEffect(() => {
@@ -74,7 +114,7 @@ const ChatPage = () => {
 
   return (
     <Flex>
-      <ScrollArea className="md:w-[280px] w-0 fixed">
+      <ScrollArea className="w-0 md:w-[280px] fixed">
         <p>
           Charizard is a draconic, bipedal Pokémon. It is primarily orange with a cream underside from the chest to the
           tip of its tail. It has a long neck, small blue eyes, slightly raised nostrils, and two horn-like structures

@@ -15,6 +15,16 @@ export type GetChatsParams = {
   userId?: number
 }
 
+export type GetChatSessionsParams = {
+  userId: number
+}
+
+export type ChatSession = {
+  id: number
+  created: string
+  firstMessage: string
+}
+
 type LoginType = {
   email: string
   password: string
@@ -66,6 +76,10 @@ class APIService {
 
   getChats(params: GetChatsParams) {
     return this.axiosInstance.get('/chats', { params })
+  }
+
+  getChatSessions({ userId }: GetChatSessionsParams): AxiosPromise<ChatSession[]> {
+    return this.axiosInstance.get(`/users/${userId}/chatsessions`)
   }
 
   login(payload: LoginType): AxiosPromise<User> {
