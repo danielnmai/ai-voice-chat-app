@@ -5,7 +5,7 @@ import { isEmail, useForm } from '@mantine/form'
 import { upperFirst } from '@mantine/hooks'
 import { notifications } from '@mantine/notifications'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Suspense, useState } from 'react'
+import { useState } from 'react'
 import useAuth from '../hooks/useAuth'
 import APIService from '../service/api'
 import handleError from '../service/handleError'
@@ -76,65 +76,63 @@ const LoginSignUp = () => {
   }
 
   return (
-    <Suspense>
-      <Center className="h-screen">
-        <Paper radius="md" p="xl" withBorder>
-          <Text size="lg" fw={500} pb={5}>
-            {upperFirst(type)}
-          </Text>
-          <form onSubmit={form.onSubmit(handleSubmit)}>
-            <Stack>
-              {type === 'signup' && (
-                <>
-                  <TextInput
-                    label="First"
-                    placeholder="First"
-                    value={form.values.firstName}
-                    onChange={(event) => form.setFieldValue('firstName', event.currentTarget.value)}
-                    radius="md"
-                  />
+    <Center className="h-screen">
+      <Paper radius="md" p="xl" withBorder>
+        <Text size="lg" fw={500} pb={5}>
+          {upperFirst(type)}
+        </Text>
+        <form onSubmit={form.onSubmit(handleSubmit)}>
+          <Stack>
+            {type === 'signup' && (
+              <>
+                <TextInput
+                  label="First"
+                  placeholder="First"
+                  value={form.values.firstName}
+                  onChange={(event) => form.setFieldValue('firstName', event.currentTarget.value)}
+                  radius="md"
+                />
 
-                  <TextInput
-                    label="Last"
-                    placeholder="Last"
-                    value={form.values.lastName}
-                    onChange={(event) => form.setFieldValue('lastName', event.currentTarget.value)}
-                    radius="md"
-                  />
-                </>
-              )}
+                <TextInput
+                  label="Last"
+                  placeholder="Last"
+                  value={form.values.lastName}
+                  onChange={(event) => form.setFieldValue('lastName', event.currentTarget.value)}
+                  radius="md"
+                />
+              </>
+            )}
 
-              <TextInput
-                required
-                label="Email"
-                placeholder="you@email.com"
-                value={form.values.email}
-                onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
-                error={form.errors.email}
-                radius="md"
-              />
+            <TextInput
+              required
+              label="Email"
+              placeholder="you@email.com"
+              value={form.values.email}
+              onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
+              error={form.errors.email}
+              radius="md"
+            />
 
-              <PasswordInput
-                required
-                label="Password"
-                placeholder="password"
-                value={form.values.password}
-                onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
-                error={form.errors.password}
-                radius="md"
-              />
-            </Stack>
+            <PasswordInput
+              required
+              label="Password"
+              placeholder="password"
+              value={form.values.password}
+              onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
+              error={form.errors.password}
+              radius="md"
+            />
+          </Stack>
 
-            <Group mt="xl">
-              <Anchor component="button" type="button" onClick={toggleType} size="xs">
-                {type === 'signup' ? 'Already have an account? Login' : "Don't have an account? Sign up"}
-              </Anchor>
-              <Button type="submit">{upperFirst(type)}</Button>
-            </Group>
-          </form>
-        </Paper>
-      </Center>
-    </Suspense>
+          <Group mt="xl">
+            <Anchor component="button" type="button" onClick={toggleType} size="xs">
+              {type === 'signup' ? 'Already have an account? Login' : "Don't have an account? Sign up"}
+            </Anchor>
+            <Button type="submit">{upperFirst(type)}</Button>
+          </Group>
+        </form>
+      </Paper>
+    </Center>
   )
 }
 

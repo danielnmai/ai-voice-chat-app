@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 
-export default function DashboardLayout({
+export default function LoginSignupLayout({
   children // will be a page or nested layout
 }: {
   children: React.ReactNode
 }) {
-  return <div>{children}</div>
+  return <Suspense>{children}</Suspense>
 }
