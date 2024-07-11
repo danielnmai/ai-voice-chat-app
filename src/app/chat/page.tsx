@@ -3,7 +3,8 @@ import { Container, Flex, ScrollArea, Stack, Text, Title } from '@mantine/core'
 import { readLocalStorageValue } from '@mantine/hooks'
 import dayjs from 'dayjs'
 import updateLocale from 'dayjs/plugin/updateLocale'
-import { groupBy } from 'lodash'
+import { groupBy, reverse } from 'lodash'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import 'regenerator-runtime/runtime'
@@ -57,11 +58,15 @@ const ChatPage = () => {
 
   const SessionList = ({ date, sessionList }: ChatSessionList) => {
     return (
-      <Container>
+      <Container mt={10} mb={10} w={280}>
         <Title order={6}>{date}</Title>
-        <Stack>
+        <Stack gap="xs">
           {sessionList.map((session) => (
-            <Text key={session.id}>{session.firstMessage}</Text>
+            <Link href={'/loginsignup'}>
+              <Text py={5} px={5} key={session.id} lineClamp={3} className="hover:bg-gray-100">
+                {session.firstMessage}
+              </Text>
+            </Link>
           ))}
         </Stack>
       </Container>
@@ -72,7 +77,7 @@ const ChatPage = () => {
     if (!sessions) return
 
     return Object.entries(sessions).map(([date, list], index) => (
-      <SessionList key={index} id={index} date={date} sessionList={list} />
+      <SessionList key={index} date={date} sessionList={list} />
     ))
   }
 
@@ -97,8 +102,9 @@ const ChatPage = () => {
 
       if (loggedInUser) {
         const { data } = await API.getChatSessions({ userId: loggedInUser.id })
-        const formatData = groupBy(data, ({ created }) => getMonthAndYear(created))
-        setSessions(formatData)
+
+        const groupedSessionsByDate = groupBy(reverse(data), ({ created }) => getMonthAndYear(created))
+        setSessions(groupedSessionsByDate)
       }
     }
     fetchChatSessions()
@@ -137,11 +143,10 @@ const ChatPage = () => {
       reset()
     }
   }
-  console.log('sessions ', sessions)
 
   return (
     <Flex>
-      <ScrollArea className="w-0 md:w-[280px] fixed">{renderSessionList()}</ScrollArea>
+      <ScrollArea className="w-0 md:w-[280px] fixed h-full">{renderSessionList()}</ScrollArea>
 
       <div className="w-full md:ml-[280px]">
         <Chat
