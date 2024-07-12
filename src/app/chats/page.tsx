@@ -43,7 +43,7 @@ type ChatSessionList = {
 
 export type CallbackResetFunction = () => void
 
-const ChatPage = () => {
+const ChatsPage = () => {
   const storedSessionId = readLocalStorageValue({ key: 'sessionId' }) as number
   const [sessionId, setSessionId] = useState<number>(storedSessionId)
   const [voiceEnabled, setVoiceEnabled] = useState(false)
@@ -61,9 +61,13 @@ const ChatPage = () => {
       <Container mt={10} mb={10} w={280}>
         <Title order={6}>{date}</Title>
         <Stack gap="xs">
-          {sessionList.map((session) => (
-            <Link href={'/loginsignup'}>
-              <Text py={5} px={5} key={session.id} lineClamp={3} className="hover:bg-gray-100">
+          {sessionList.map((session, index) => (
+            <Link
+              key={index}
+              href={{ pathname: '/chats', query: { sessionId: session.id } }}
+              onClick={() => onSessionSelected(session.id)}
+            >
+              <Text pl={10} py={5} key={session.id} lineClamp={3} className="hover:bg-gray-100">
                 {session.firstMessage}
               </Text>
             </Link>
@@ -81,6 +85,11 @@ const ChatPage = () => {
     ))
   }
 
+  const onSessionSelected = (id: number) => {
+    setSessionId(id)
+    saveSessionId(id)
+  }
+
   // fetch chat history based on stored information
   useEffect(() => {
     const fetchChats = async () => {
@@ -93,7 +102,7 @@ const ChatPage = () => {
       }
     }
     fetchChats()
-  }, [])
+  }, [storedSessionId])
 
   // fetch chat sessions of the user
   useEffect(() => {
@@ -118,6 +127,8 @@ const ChatPage = () => {
   }, [loggedInUser])
 
   const handlePostChat = async (content: string, reset: CallbackResetFunction) => {
+    if (!content) return
+
     try {
       const userChat: ChatType = { sessionId, language: 'en', content, source: 'client' }
       setChats([...chats, userChat])
@@ -162,4 +173,4 @@ const ChatPage = () => {
   )
 }
 
-export default ChatPage
+export default ChatsPage

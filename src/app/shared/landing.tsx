@@ -4,7 +4,7 @@ import { Button, Container, Stack, Text, Title } from '@mantine/core'
 import { AxiosError } from 'axios'
 import Link from 'next/link'
 import { useRef, useState } from 'react'
-import { CallbackResetFunction } from '../chat/page'
+import { CallbackResetFunction } from '../chats/page'
 import APIService, { ChatType } from '../service/api'
 import Chat from './chat'
 
@@ -55,7 +55,7 @@ const Landing = () => {
             A helpful assistant that can listen to your voice and speak to you
           </Text>
           <Stack align="start" justify="center">
-            <Link href={{ pathname: '/chat' }}>
+            <Link href={{ pathname: '/chats' }}>
               <Button
                 w={200}
                 className="text-xl"

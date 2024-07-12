@@ -8,7 +8,7 @@ import { IconArrowUp, IconCircleCheck } from '@tabler/icons-react'
 import Link from 'next/link'
 import { RefObject, useEffect, useRef, useState } from 'react'
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
-import { CallbackResetFunction } from '../chat/page'
+import { CallbackResetFunction } from '../chats/page'
 import APIService, { ChatType } from '../service/api'
 
 type ChatMessageType = Pick<ChatType, 'source' | 'content'>

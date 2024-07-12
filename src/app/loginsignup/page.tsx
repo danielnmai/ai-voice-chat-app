@@ -55,7 +55,7 @@ const LoginSignUp = () => {
 
         loginUser(data)
         form.reset()
-        router.push('/chat')
+        router.push('/chats')
       } else {
         const { email, password, firstName, lastName } = values
         const response = await api.postUser({ email, password, firstName, lastName })
