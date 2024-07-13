@@ -2,7 +2,6 @@
 
 import { Anchor, Button, Center, Group, Paper, PasswordInput, Stack, Text, TextInput } from '@mantine/core'
 import { isEmail, useForm } from '@mantine/form'
-import { upperFirst } from '@mantine/hooks'
 import { notifications } from '@mantine/notifications'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
@@ -30,14 +29,14 @@ const LoginSignUp = () => {
   const form = useForm({
     initialValues: {
       email: '',
-      firstName: '',
-      lastName: '',
-      password: ''
+      password: '',
+      confirmPassword: ''
     },
 
     validate: {
       email: isEmail('Email is required'),
-      password: (val: string) => val.length < 4 && 'Password should include at least 4 characters'
+      password: (val: string) => val.length < 4 && 'Password should include at least 4 characters',
+      confirmPassword: (val, values) => (val !== values.password ? 'Password did not match' : null)
     }
   })
 
@@ -57,8 +56,8 @@ const LoginSignUp = () => {
         form.reset()
         router.push('/chats')
       } else {
-        const { email, password, firstName, lastName } = values
-        const response = await api.postUser({ email, password, firstName, lastName })
+        const { email, password } = values
+        const response = await api.postUser({ email, password })
 
         if (response && response.data) {
           notifications.show({
@@ -79,30 +78,10 @@ const LoginSignUp = () => {
     <Center className="h-screen">
       <Paper radius="md" p="xl" withBorder>
         <Text size="lg" fw={500} pb={5}>
-          {upperFirst(type)}
+          {type === 'signup' ? 'Sign up' : 'Log in'}
         </Text>
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <Stack>
-            {type === 'signup' && (
-              <>
-                <TextInput
-                  label="First"
-                  placeholder="First"
-                  value={form.values.firstName}
-                  onChange={(event) => form.setFieldValue('firstName', event.currentTarget.value)}
-                  radius="md"
-                />
-
-                <TextInput
-                  label="Last"
-                  placeholder="Last"
-                  value={form.values.lastName}
-                  onChange={(event) => form.setFieldValue('lastName', event.currentTarget.value)}
-                  radius="md"
-                />
-              </>
-            )}
-
             <TextInput
               required
               label="Email"
@@ -122,13 +101,24 @@ const LoginSignUp = () => {
               error={form.errors.password}
               radius="md"
             />
+            {type === 'signup' && (
+              <PasswordInput
+                required
+                label="Confirm password"
+                placeholder="confirm password"
+                value={form.values.confirmPassword}
+                onChange={(event) => form.setFieldValue('confirmPassword', event.currentTarget.value)}
+                error={form.errors.confirmPassword}
+                radius="md"
+              />
+            )}
           </Stack>
 
           <Group mt="xl">
             <Anchor component="button" type="button" onClick={toggleType} size="xs">
               {type === 'signup' ? 'Already have an account? Login' : "Don't have an account? Sign up"}
             </Anchor>
-            <Button type="submit">{upperFirst(type)}</Button>
+            <Button type="submit">{type === 'signup' ? 'Sign up' : 'Log in'}</Button>
           </Group>
         </form>
       </Paper>

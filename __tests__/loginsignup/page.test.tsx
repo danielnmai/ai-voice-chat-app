@@ -2,17 +2,21 @@ import '@testing-library/jest-dom'
 import Page from '../../src/app/loginsignup/page'
 import { render } from '../../test_utils'
 
-import { useRouter, useSearchParams } from 'next/navigation'
+const getFn = jest.fn()
+const pushFn = jest.fn()
 
-jest.mock('next/navigation')
-useRouter.mockReturnValue({
-  push: jest.fn()
-})
-
-useSearchParams.mockReturnValue({
-  toString: () => toString,
-  get: jest.fn()
-})
+jest.mock('next/navigation', () => ({
+  useSearchParams() {
+    return {
+      get: getFn
+    }
+  },
+  useRouter() {
+    return {
+      push: pushFn
+    }
+  }
+}))
 
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
@@ -31,6 +35,7 @@ Object.defineProperty(window, 'matchMedia', {
 describe('Page', () => {
   it('renders a heading', () => {
     render(<Page />)
-    expect(useSearchParams).toHaveBeenCalled()
+    expect(getFn).toHaveBeenCalled()
   })
 })
+  
