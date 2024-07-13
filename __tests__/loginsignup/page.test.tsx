@@ -1,16 +1,18 @@
 import '@testing-library/jest-dom'
-import Page from '../../src/app/chats/page'
+import Page from '../../src/app/loginsignup/page'
 import { render } from '../../test_utils'
 
-const replaceFn = jest.fn()
+import { useRouter, useSearchParams } from 'next/navigation'
 
-jest.mock('next/navigation', () => ({
-  useRouter() {
-    return {
-      replace: replaceFn
-    }
-  }
-}))
+jest.mock('next/navigation')
+useRouter.mockReturnValue({
+  push: jest.fn()
+})
+
+useSearchParams.mockReturnValue({
+  toString: () => toString,
+  get: jest.fn()
+})
 
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
@@ -26,15 +28,9 @@ Object.defineProperty(window, 'matchMedia', {
   }))
 })
 
-global.ResizeObserver = jest.fn().mockImplementation(() => ({
-  observe: jest.fn(),
-  unobserve: jest.fn(),
-  disconnect: jest.fn()
-}))
-
 describe('Page', () => {
   it('renders a heading', () => {
     render(<Page />)
-    expect(replaceFn).toHaveBeenCalled()
+    expect(useSearchParams).toHaveBeenCalled()
   })
 })
