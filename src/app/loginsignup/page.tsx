@@ -36,7 +36,7 @@ const LoginSignUp = () => {
     validate: {
       email: isEmail('Email is required'),
       password: (val: string) => val.length < 4 && 'Password should include at least 4 characters',
-      confirmPassword: (val, values) => (val !== values.password ? 'Password did not match' : null)
+      confirmPassword: (val, values) => (type === 'signup' && val !== values.password ? 'Password did not match' : null)
     }
   })
 
