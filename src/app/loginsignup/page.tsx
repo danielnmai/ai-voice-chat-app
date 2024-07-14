@@ -80,7 +80,7 @@ const LoginSignUp = () => {
         <Text size="lg" fw={500} pb={5}>
           {type === 'signup' ? 'Sign up' : 'Log in'}
         </Text>
-        <form onSubmit={form.onSubmit(handleSubmit)}>
+        <form aria-label="form" onSubmit={form.onSubmit(handleSubmit)}>
           <Stack>
             <TextInput
               required
