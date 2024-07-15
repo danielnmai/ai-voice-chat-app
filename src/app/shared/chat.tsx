@@ -120,10 +120,8 @@ const Chat = (props: ChatComponentProps) => {
               size="lg"
               onKeyDown={getHotkeyHandler([['Enter', onTextInput]])}
               rightSection={
-                <ActionIcon size={36} mr={5}>
-                  <IconArrowUp onClick={onTextInput} width={20}>
-                    Send
-                  </IconArrowUp>
+                <ActionIcon aria-label="Send" size={36} mr={5} onClick={onTextInput}>
+                  <IconArrowUp width={20} />
                 </ActionIcon>
               }
             />
