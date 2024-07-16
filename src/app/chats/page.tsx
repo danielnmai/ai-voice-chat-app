@@ -8,11 +8,11 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import 'regenerator-runtime/runtime'
+import Chat from '../components/chat'
 import useAuth from '../hooks/useAuth'
 import useSession from '../hooks/useSession'
 import APIService, { ChatSession, ChatType } from '../service/api'
 import handleError from '../service/handleError'
-import Chat from '../shared/chat'
 
 dayjs.extend(updateLocale)
 dayjs.updateLocale('en', {

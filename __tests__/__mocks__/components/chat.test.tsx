@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
-import ChatComponent from '../../src/app/shared/chat'
-import { render, screen, userEvent } from '../../test_utils'
+import ChatComponent from '../../../src/app/components/chat'
+import { render, screen, userEvent } from '../../../test_utils'
 
 const replaceFn = jest.fn()
 

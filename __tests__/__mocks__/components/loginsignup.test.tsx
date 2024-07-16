@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
-import LoginSignupPage from '../../src/app/loginsignup/page'
-import { render, screen, userEvent } from '../../test_utils'
+import LoginSignupPage from '../../../src/app/loginsignup/page'
+import { render, screen, userEvent } from '../../../test_utils'
 
 const getFn = jest.fn()
 const pushFn = jest.fn()
