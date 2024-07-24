@@ -25,6 +25,7 @@ const LoginSignUp = () => {
   const [type, setType] = useState<LoginSignupType>(defaultType || 'login')
   const router = useRouter()
   const { loginUser } = useAuth()
+  const api = new APIService()
 
   const form = useForm({
     initialValues: {
@@ -47,7 +48,6 @@ const LoginSignUp = () => {
 
   const handleSubmit = async (values: UserFormType) => {
     try {
-      const api = new APIService()
       if (type == 'login') {
         const { email, password } = values
         console.log('api URL', api.BASE_URL)
@@ -81,7 +81,7 @@ const LoginSignUp = () => {
         <Text size="lg" fw={500} pb={5}>
           {type === 'signup' ? 'Sign up' : 'Log in'}
         </Text>
-        <form aria-label="form" onSubmit={form.onSubmit(handleSubmit)}>
+        <form aria-label="form" action={api.BASE_URL} onSubmit={form.onSubmit(handleSubmit)}>
           <Stack>
             <TextInput
               required
