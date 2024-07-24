@@ -1,3 +1,5 @@
+'use client'
+
 import { useLocalStorage } from '@mantine/hooks'
 import { useContext } from 'react'
 import { AuthContext } from '../context/auth'
