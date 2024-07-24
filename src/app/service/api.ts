@@ -39,7 +39,7 @@ type PostChatResponse = {
 }
 
 class APIService {
-  BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
+  BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://ra2ophd7bj.execute-api.us-west-1.amazonaws.com/v1'
 
   axiosInstance: AxiosInstance
 
