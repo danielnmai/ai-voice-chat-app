@@ -51,6 +51,7 @@ const LoginSignUp = () => {
       if (type == 'login') {
         const { email, password } = values
         const { data } = await api.login({ email, password })
+        console.log('data ', data)
 
         loginUser(data)
         form.reset()
