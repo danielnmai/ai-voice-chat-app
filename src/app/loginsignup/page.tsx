@@ -52,7 +52,7 @@ const LoginSignUp = () => {
         const { email, password } = values
         const { data } = await api.login({ email, password })
         console.log('data ', data)
-
+        console.log('api URL', api.BASE_URL)
         loginUser(data)
         form.reset()
         router.push('/chats')
