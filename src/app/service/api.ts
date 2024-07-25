@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosInstance, AxiosPromise } from 'axios'
+import axios, { AxiosInstance, AxiosPromise } from 'axios'
 import { User } from '../hooks/useAuth'
 import { UserFormType } from '../loginsignup/page'
 
@@ -49,17 +49,17 @@ class APIService {
       timeout: 30000
     })
 
-    this.axiosInstance.interceptors.response.use(
-      (response) => {
-        return response
-      },
-      (error) => {
-        if (error instanceof AxiosError && error.response?.status == 401) {
-          window.location.href = '/loginsignup'
-        }
-        return Promise.reject(error)
-      }
-    )
+    // this.axiosInstance.interceptors.response.use(
+    //   (response) => {
+    //     return response
+    //   },
+    //   (error) => {
+    //     if (error instanceof AxiosError && error.response?.status == 401) {
+    //       window.location.href = '/loginsignup'
+    //     }
+    //     return Promise.reject(error)
+    //   }
+    // )
   }
 
   postChat(payload: ChatType): AxiosPromise<PostChatResponse> {
