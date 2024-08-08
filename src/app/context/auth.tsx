@@ -5,7 +5,7 @@ import axios from 'axios'
 import dayjs from 'dayjs'
 import { jwtDecode } from 'jwt-decode'
 import { PropsWithChildren, createContext, useState } from 'react'
-import { User } from '../hooks/useAuth'
+import useAuth, { User } from '../hooks/useAuth'
 import usePersistentSession from '../hooks/useSession'
 
 interface IAuthContext {
@@ -19,6 +19,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
   // Get the user object stored in local storage
   const user = readLocalStorageValue({ key: 'user' }) as string
   const { removeSessionId } = usePersistentSession()
+  const { logoutUser } = useAuth()
 
   let storedUser = null
 
@@ -40,6 +41,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
       console.warn('token expired, user needs to log in again')
       storedUser = null
       removeSessionId()
+      logoutUser()
     }
   }
 
