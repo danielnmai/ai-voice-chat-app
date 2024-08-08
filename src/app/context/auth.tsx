@@ -37,6 +37,7 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
     // token expired, remove session from local storage
     if (now.isAfter(expiredDate)) {
+      console.warn('token expired, user needs to log in again')
       storedUser = null
       removeSessionId()
     }
