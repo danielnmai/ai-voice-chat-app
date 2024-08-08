@@ -48,18 +48,6 @@ class APIService {
       baseURL: this.BASE_URL,
       timeout: 30000
     })
-
-    // this.axiosInstance.interceptors.response.use(
-    //   (response) => {
-    //     return response
-    //   },
-    //   (error) => {
-    //     if (error instanceof AxiosError && error.response?.status == 401) {
-    //       window.location.href = '/loginsignup'
-    //     }
-    //     return Promise.reject(error)
-    //   }
-    // )
   }
 
   postChat(payload: ChatType): AxiosPromise<PostChatResponse> {

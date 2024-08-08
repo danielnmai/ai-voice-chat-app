@@ -50,9 +50,7 @@ const LoginSignUp = () => {
     try {
       if (type == 'login') {
         const { email, password } = values
-        console.log('api URL', api.BASE_URL)
         const { data } = await api.login({ email, password })
-        console.log('data ', data)
         loginUser(data)
         form.reset()
         router.push('/chats')
