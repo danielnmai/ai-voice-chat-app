@@ -52,7 +52,7 @@ const Landing = () => {
         <Container className="flex flex-col h-full justify-center" size="lg">
           <Title className="text-4xl text-white mb-5">An AI Conversationalist</Title>
           <Text className="text-white text-2xl mb-10">
-            A helpful assistant that can listen to your voice and speak to you
+            No more typing! Speak to the assistant and be spoken back like a real conversation
           </Text>
           <Stack align="start" justify="center">
             <Link href={{ pathname: '/chats' }}>
