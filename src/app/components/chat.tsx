@@ -129,7 +129,7 @@ const Chat = (props: ChatComponentProps) => {
         ) : (
           <Container>
             <Text mb={5} size="lg">
-              Want to continue?{' '}
+              You used up your free messages! Want to continue?{' '}
               <Link href={{ pathname: '/loginsignup', query: { type: 'signup' } }}>
                 <Text c="blue" span>
                   Sign up{' '}
