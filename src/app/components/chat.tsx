@@ -2,9 +2,16 @@
 
 import 'regenerator-runtime/runtime'
 
-import { ActionIcon, Button, Center, Container, List, Text, TextInput, ThemeIcon } from '@mantine/core'
-import { getHotkeyHandler } from '@mantine/hooks'
-import { IconArrowUp, IconCircleCheck } from '@tabler/icons-react'
+import { ActionIcon, Container, Flex, List, Text, TextInput, ThemeIcon, Tooltip } from '@mantine/core'
+import { getHotkeyHandler, useHotkeys } from '@mantine/hooks'
+import {
+  IconArrowUp,
+  IconCircleCheck,
+  IconMicrophone,
+  IconMicrophoneOff,
+  IconVolume,
+  IconVolumeOff
+} from '@tabler/icons-react'
 import Link from 'next/link'
 import { RefObject, useEffect, useRef, useState } from 'react'
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
@@ -63,6 +70,9 @@ const Chat = (props: ChatComponentProps) => {
     setIsListening(!isListening)
   }
 
+  // Hotkey to turn on/off voice input
+  useHotkeys([['mod+shift+S', () => toggleVoiceInput()]])
+
   // scroll to the latest message
   useEffect(() => {
     if (chats.length > 0) {
@@ -103,26 +113,27 @@ const Chat = (props: ChatComponentProps) => {
       <div className="flex flex-col self-center px-4 pt-4 max-w-[700px] min-w-[300px] w-full h-44">
         {!demoEnded ? (
           <div>
-            <Center mb={5}>
-              <div className="flex">
-                <Button variant="outline" className="mr-2" onClick={toggleVoiceInput}>
-                  {isListening ? 'Stop' : 'Start'} Talking
-                </Button>
-                <Button variant="outline" className="mr-2" onClick={toggleVoiceResponse}>
-                  {voiceEnabled ? 'Disable' : 'Enable'} Voice Response
-                </Button>
-              </div>
-            </Center>
             <TextInput
-              placeholder="How can I help?"
+              placeholder="Type or hit ⇧⌘S to speak"
               onChange={(event) => setInput(event.target.value)}
               value={input}
               size="lg"
               onKeyDown={getHotkeyHandler([['Enter', onTextInput]])}
+              rightSectionWidth={130}
               rightSection={
-                <ActionIcon aria-label="Send" size={36} mr={5} onClick={onTextInput}>
-                  <IconArrowUp width={20} />
-                </ActionIcon>
+                <Flex>
+                  <ActionIcon aria-label="Send" size={36} mr={5} onClick={onTextInput}>
+                    <IconArrowUp width={20} />
+                  </ActionIcon>
+                  <ActionIcon aria-label="Microphone" size={36} mr={5} onClick={toggleVoiceInput}>
+                    {isListening ? <IconMicrophoneOff width={20} /> : <IconMicrophone width={20} />}
+                  </ActionIcon>
+                  <Tooltip label="Toggle with ⇧⌘V">
+                    <ActionIcon aria-label="Speaker" size={36} mr={5} onClick={toggleVoiceResponse}>
+                      {voiceEnabled ? <IconVolumeOff width={20} /> : <IconVolume width={20} />}
+                    </ActionIcon>
+                  </Tooltip>
+                </Flex>
               }
             />
           </div>

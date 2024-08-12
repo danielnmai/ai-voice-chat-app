@@ -2,6 +2,7 @@
 
 import { Anchor, Button, Center, Group, Paper, PasswordInput, Stack, Text, TextInput } from '@mantine/core'
 import { isEmail, useForm } from '@mantine/form'
+import { getHotkeyHandler } from '@mantine/hooks'
 import { notifications } from '@mantine/notifications'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
@@ -117,7 +118,9 @@ const LoginSignUp = () => {
             <Anchor component="button" type="button" onClick={toggleType} size="xs">
               {type === 'signup' ? 'Already have an account? Login' : "Don't have an account? Sign up"}
             </Anchor>
-            <Button type="submit">{type === 'signup' ? 'Sign up' : 'Log in'}</Button>
+            <Button onKeyDown={getHotkeyHandler([['Enter', handleSubmit]])} type="submit">
+              {type === 'signup' ? 'Sign up' : 'Log in'}
+            </Button>
           </Group>
         </form>
       </Paper>
