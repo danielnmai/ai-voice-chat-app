@@ -22,7 +22,7 @@ type ChatMessageType = Pick<ChatType, 'source' | 'content'>
 
 const ChatMessage = ({ source, content }: ChatMessageType) => {
   return (
-    <div className="mb-4 w-3/4 md:w-1/2 self-center">
+    <div className="mb-4 w-3/4 min-w-[300px] self-center">
       <h3 className="font-bold my-2">{source == 'client' ? 'You' : 'AI'}</h3>
       <p>{content}</p>
     </div>
