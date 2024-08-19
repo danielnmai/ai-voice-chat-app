@@ -1,4 +1,6 @@
-The app is deployed at [https://d2g0o44nd1v6ex.cloudfront.net/](http://spokenai.danielmai.com/)
+Note: this is still a work in progress, so some functions might not be available.
+
+The app is deployed at [spokenai.danielmai.com](http://spokenai.danielmai.com/)
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
