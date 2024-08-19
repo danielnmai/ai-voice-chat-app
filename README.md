@@ -1,6 +1,4 @@
-The app is deployed at https://d2g0o44nd1v6ex.cloudfront.net/
-
-The backend API is at https://ra2ophd7bj.execute-api.us-west-1.amazonaws.com/v1
+The app is deployed at [https://d2g0o44nd1v6ex.cloudfront.net/](http://spokenai.danielmai.com/)
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
