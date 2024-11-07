@@ -44,6 +44,7 @@ const Chat = (props: ChatComponentProps) => {
   const { chats, chatComponentRef, handlePostChat, voiceEnabled, setVoiceEnabled, voiceChatId, demoEnded } = props
   const [input, setInput] = useState('')
   const [isListening, setIsListening] = useState<boolean>(false)
+  const [audioURL, setAudioURL] = useState('')
   const { finalTranscript, resetTranscript } = useSpeechRecognition()
   const API = new APIService()
   const messageEndRef = useRef<HTMLDivElement>(null)
@@ -80,6 +81,18 @@ const Chat = (props: ChatComponentProps) => {
     }
   }, [chats])
 
+  useEffect(() => {
+    if (!voiceChatId || !voiceEnabled) return
+
+    const fetchAudio = async () => {
+      const res = await API.getChatAudioURL(voiceChatId)
+      const blob = new Blob([res.data], { type: 'audio/mp3' })
+      const url = URL.createObjectURL(blob)
+      setAudioURL(url)
+    }
+    fetchAudio()
+  }, [voiceEnabled, voiceChatId])
+
   // trigger microphone input
   useEffect(() => {
     if (isListening) {
@@ -103,9 +116,9 @@ const Chat = (props: ChatComponentProps) => {
           <ChatMessage key={index} source={source} content={content} />
         ))}
         <div ref={messageEndRef} className="self-center">
-          {voiceEnabled && voiceChatId && (
-            <audio id="ai-voice" src={API.getChatAudioURL(voiceChatId)} autoPlay>
-              <track kind="captions" content={chats[chats.length - 1].content} />
+          {voiceEnabled && voiceChatId && audioURL && (
+            <audio id="ai-voice" autoPlay src={audioURL}>
+              <track kind="captions" />
             </audio>
           )}
         </div>

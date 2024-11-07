@@ -110,7 +110,7 @@ const ChatsPage = () => {
       const getMonthAndYear = (date: string) => dayjs(date).format('MMMM YYYY')
 
       if (loggedInUser) {
-        const { data } = await API.getChatSessions({ userId: loggedInUser.id })
+        const { data } = await API.getChatSessions()
 
         const groupedSessionsByDate = groupBy(reverse(data), ({ created }) => getMonthAndYear(created))
         setSessions(groupedSessionsByDate)

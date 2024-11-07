@@ -15,10 +15,6 @@ export type GetChatsParams = {
   userId?: number
 }
 
-export type GetChatSessionsParams = {
-  userId: number
-}
-
 export type ChatSession = {
   id: number
   created: string
@@ -71,15 +67,15 @@ class APIService {
   }
 
   getChatAudioURL(chatId: number) {
-    return `${this.BASE_URL}${chatId}/chats/audio/`
+    return this.axiosInstance.get(`${this.BASE_URL}/chats/${chatId}/audio/`, { responseType: 'blob' })
   }
 
   getChats(params: GetChatsParams) {
     return this.axiosInstance.get('/chats', { params })
   }
 
-  getChatSessions({ userId }: GetChatSessionsParams): AxiosPromise<ChatSession[]> {
-    return this.axiosInstance.get(`/users/${userId}/chatsessions`)
+  getChatSessions(): AxiosPromise<ChatSession[]> {
+    return this.axiosInstance.get('/chats-sessions')
   }
 
   login(payload: LoginType): AxiosPromise<User> {
