@@ -117,7 +117,7 @@ const Chat = (props: ChatComponentProps) => {
         ))}
         <div ref={messageEndRef} className="self-center">
           {voiceEnabled && voiceChatId && audioURL && (
-            <audio id="ai-voice" autoPlay src={audioURL}>
+            <audio id="ai-voice" autoPlay controls src={audioURL}>
               <track kind="captions" />
             </audio>
           )}
