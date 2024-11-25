@@ -86,7 +86,7 @@ const Chat = (props: ChatComponentProps) => {
 
     const fetchAudio = async () => {
       const res = await API.getChatAudioURL(voiceChatId)
-      const blob = new Blob([res.data], { type: 'audio/mp3' })
+      const blob = new Blob([res.data], { type: 'audio/mpeg' })
       const url = URL.createObjectURL(blob)
       const audio = new Audio(url)
       console.log('url', url)
