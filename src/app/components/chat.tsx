@@ -93,6 +93,7 @@ const Chat = (props: ChatComponentProps) => {
       console.log('blob', blob)
       console.log('audio', audio)
       // setAudioURL(url)
+      audio.crossOrigin = 'anonymous'
       audio.play()
     }
     fetchAudio()
