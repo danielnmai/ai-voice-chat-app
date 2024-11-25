@@ -89,6 +89,9 @@ const Chat = (props: ChatComponentProps) => {
       const blob = new Blob([res.data], { type: 'audio/mp3' })
       const url = URL.createObjectURL(blob)
       const audio = new Audio(url)
+      console.log('url', url)
+      console.log('blob', blob)
+      console.log('audio', audio)
       // setAudioURL(url)
       audio.play()
     }
