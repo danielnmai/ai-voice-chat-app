@@ -44,7 +44,7 @@ const Chat = (props: ChatComponentProps) => {
   const { chats, chatComponentRef, handlePostChat, voiceEnabled, setVoiceEnabled, voiceChatId, demoEnded } = props
   const [input, setInput] = useState('')
   const [isListening, setIsListening] = useState<boolean>(false)
-  // const [audioURL, setAudioURL] = useState('')
+  const [audioURL, setAudioURL] = useState('')
   const { finalTranscript, resetTranscript } = useSpeechRecognition()
   const API = new APIService()
   const messageEndRef = useRef<HTMLDivElement>(null)
@@ -92,9 +92,12 @@ const Chat = (props: ChatComponentProps) => {
       console.log('url', url)
       console.log('blob', blob)
       console.log('audio', audio)
-      // setAudioURL(url)
+      setAudioURL(url)
       audio.crossOrigin = 'anonymous'
-      audio.play()
+      audio
+        .play()
+        .then((value) => console.log('value ', value))
+        .catch((err) => console.log('err', err))
     }
     fetchAudio()
   }, [voiceEnabled, voiceChatId])
@@ -123,13 +126,13 @@ const Chat = (props: ChatComponentProps) => {
         {chats.map(({ source, content }, index) => (
           <ChatMessage key={index} source={source} content={content} />
         ))}
-        {/* <div ref={messageEndRef} className="self-center">
+        <div ref={messageEndRef} className="self-center">
           {voiceEnabled && voiceChatId && audioURL && (
             <audio id="ai-voice" autoPlay controls src={audioURL}>
               <track kind="captions" />
             </audio>
           )}
-        </div> */}
+        </div>
       </div>
       <div className="flex flex-col self-center px-4 pt-4 max-w-[700px] min-w-[300px] w-full h-44">
         {!demoEnded ? (
