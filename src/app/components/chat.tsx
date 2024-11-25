@@ -88,7 +88,9 @@ const Chat = (props: ChatComponentProps) => {
       const res = await API.getChatAudioURL(voiceChatId)
       const blob = new Blob([res.data], { type: 'audio/mp3' })
       const url = URL.createObjectURL(blob)
-      setAudioURL(url)
+      const audio = new Audio(url)
+      // setAudioURL(url)
+      audio.play()
     }
     fetchAudio()
   }, [voiceEnabled, voiceChatId])
@@ -96,8 +98,10 @@ const Chat = (props: ChatComponentProps) => {
   // trigger microphone input
   useEffect(() => {
     if (isListening) {
+      console.log('start listening')
       SpeechRecognition.startListening({ continuous: true })
     } else {
+      console.log('stop listening')
       SpeechRecognition.stopListening()
     }
   }, [isListening])
