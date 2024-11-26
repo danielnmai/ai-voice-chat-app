@@ -67,7 +67,7 @@ class APIService {
   }
 
   getChatAudioURL(chatId: number) {
-    return this.axiosInstance.get(`${this.BASE_URL}/chats/${chatId}/audio/`, { responseType: 'blob' })
+    return this.axiosInstance.get(`${this.BASE_URL}/chats/${chatId}/audio/`)
   }
 
   getChats(params: GetChatsParams) {
